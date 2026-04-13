@@ -257,18 +257,54 @@
         </div>
     </footer>
 
-    <script>
-        let db = JSON.parse(localStorage.getItem('ycb_ultra_v5')) || [];
-        let config = JSON.parse(localStorage.getItem('ycb_config_v5')) || {
-            adminPass: 'rafi2026',
-            pressPass: 'press2026',
-            pressStatus: true,
-            payNum: '01763752653',
-            notice: 'বড়াইগ্রামের উন্নয়নে আমাদের সাথে যুক্ত হোন। মেম্বারশিপ ড্রাইভ চলছে! হটলাইন: ০১৭৬৮৫৭৯৯৫৭',
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDTAotZxUVqL9hL9_rt0oub-K9S9j60Wc",
+            authDomain: "youth-community-baraigram.firebaseapp.com",
+            databaseURL: "https://youth-community-baraigram-default-rtdb.firebaseio.com",
+            projectId: "youth-community-baraigram",
+            storageBucket: "youth-community-baraigram.firebasestorage.app",
+            messagingSenderId: "465895578974",
+            appId: "1:465895578974:web:c3bd8ceffe55ce7c6b83cf",
+            measurementId: "G-STH0PRECV8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const rdb = getDatabase(app);
+
+        // Global objects that the original script uses
+        window.db = [];
+        window.config = JSON.parse(localStorage.getItem('ycb_config_v5')) || {
+            adminPass: 'rafi2026', pressPass: 'press2026', pressStatus: true,
+            payNum: '01763752653', notice: 'বড়াইগ্রামের উন্নয়নে আমাদের সাথে যুক্ত হোন।',
             prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 },
             adUrl: 'https://i.ibb.co/rGrdQBtL/PLPL-Osman20260411-123334.png'
         };
 
+        // Sync Data
+        onValue(ref(rdb, 'members'), (snapshot) => {
+            const data = snapshot.val();
+            window.db = data ? Object.values(data) : [];
+            if(typeof renderHome === 'function') renderHome();
+        });
+
+        onValue(ref(rdb, 'config'), (snapshot) => {
+            if(snapshot.exists()) {
+                window.config = snapshot.val();
+                if(typeof renderHome === 'function') renderHome();
+            }
+        });
+
+        // Bridge functions for the existing UI
+        window.syncToFirebase = (path, data) => set(ref(rdb, path), data);
+        window.updateMemberStatus = (id, status) => update(ref(rdb, 'members/' + id), { status });
+        window.deleteMemberFromFirebase = (id) => remove(ref(rdb, 'members/' + id));
+    </script>
+    <script>
+        // --- ORIGINAL SCRIPT START ---
         const plans = [
             {id:'Star', n:'স্টার', g:'from-orange-500 to-amber-500', c:'#f97316', i:'star'},
             {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield'},
@@ -288,6 +324,7 @@
         }
 
         function renderHome() {
+            if(!window.config) return;
             document.getElementById('pressNavBtn').style.display = config.pressStatus ? 'block' : 'none';
             document.getElementById('planGrid').innerHTML = plans.map(p => `
                 <div onclick="initApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-8 md:p-10 rounded-[3rem] text-white cursor-pointer relative overflow-hidden premium-hover shadow-xl">
@@ -305,12 +342,10 @@
 
         function closeAd() { document.getElementById('adOverlay').style.display = 'none'; }
 
-        // AD BANNER HANDLER (FIXED)
         function handleAdUpload(e) {
             const reader = new FileReader();
             reader.onload = () => { 
                 config.adUrl = reader.result; 
-                // Instant Visual Feedback
                 const preview = document.getElementById('adPreviewArea');
                 if(preview) preview.innerHTML = `<img src="${reader.result}" class="w-full h-32 object-cover rounded-2xl shadow-md">`;
             };
@@ -405,15 +440,17 @@
             const v = (id) => document.getElementById(id).value;
             if(!v('fName') || !v('fMob') || !currentAppImg) return alert('নাম, মোবাইল এবং ছবি দিন!');
             
+            const mid = 'YCB-' + Math.floor(100000 + Math.random() * 900000);
             const member = {
-                id: 'YCB-' + Math.floor(100000 + Math.random() * 900000),
+                id: mid,
                 name: v('fName'), father: v('fFather'), mob: v('fMob'), nid: v('fNid'),
                 dob: v('fDob'), blood: v('fBlood'), vill: v('fVill'), upz: v('fUpz'), dist: v('fDist'),
                 trx: v('fTrx'), receiver: v('fReceiver'), plan: pid, photo: currentAppImg,
                 status: 'Pending', joined: new Date().toLocaleDateString('bn-BD')
             };
             
-            db.push(member); localStorage.setItem('ycb_ultra_v5', JSON.stringify(db));
+            // Push to Firebase
+            if(window.syncToFirebase) window.syncToFirebase('members/' + mid, member);
             renderReceipt(member);
         }
 
@@ -540,7 +577,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="id-back"
+                                <div class="id-back">
                                     <h5 class="text-[10px] font-black uppercase text-slate-300 tracking-[5px] mb-6">Terms & Conditions</h5>
                                     <ul class="text-[8px] text-left space-y-2 font-bold text-slate-500 list-disc px-4">
                                         <li>এই কার্ডটি ইয়ুথ কমিউনিটি বড়াইগ্রামের সম্পত্তি।</li>
@@ -641,7 +678,11 @@
             lucide.createIcons();
         }
 
-        function saveConfig() { localStorage.setItem('ycb_config_v5', JSON.stringify(config)); alert('সেটিং আপডেট হয়েছে!'); renderHome(); }
+        function saveConfig() { 
+            if(window.syncToFirebase) window.syncToFirebase('config', config);
+            alert('সেটিং আপডেট হয়েছে!'); 
+            renderHome(); 
+        }
         
         function saveAdvancedSettings() {
             config.notice = document.getElementById('noticeInput').value;
@@ -684,81 +725,19 @@
         }
 
         function actionMember(id, act) {
-            if(act === 'Approve') { db.find(x => x.id === id).status = 'Approved'; alert('মেম্বার অনুমোদিত হয়েছে!'); }
-            else if(act === 'Delete' && confirm('আপনি কি নিশ্চিত যে এই মেম্বারটি মুছে ফেলতে চান?')) { db = db.filter(x => x.id !== id); }
-            localStorage.setItem('ycb_ultra_v5', JSON.stringify(db));
+            if(act === 'Approve') { 
+                if(window.updateMemberStatus) window.updateMemberStatus(id, 'Approved');
+                alert('মেম্বার অনুমোদিত হয়েছে!'); 
+            }
+            else if(act === 'Delete' && confirm('আপনি কি নিশ্চিত যে এই মেম্বারটি মুছে ফেলতে চান?')) { 
+                if(window.deleteMemberFromFirebase) window.deleteMemberFromFirebase(id);
+            }
             if(document.getElementById('fullModal')) document.getElementById('fullModal').remove();
             setTab('db');
         }
 
+        // Initialize UI
         renderHome();
     </script>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-  // আপনার দেওয়া কনফিগারেশন
-  const firebaseConfig = {
-    apiKey: "AIzaSyCDTAotZxUVqL9hL9_rt0oub-K9S9j60Wc",
-    authDomain: "youth-community-baraigram.firebaseapp.com",
-    databaseURL: "https://youth-community-baraigram-default-rtdb.firebaseio.com",
-    projectId: "youth-community-baraigram",
-    storageBucket: "youth-community-baraigram.firebasestorage.app",
-    messagingSenderId: "465895578974",
-    appId: "1:465895578974:web:c3bd8ceffe55ce7c6b83cf",
-    measurementId: "G-STH0PRECV8"
-  };
-
-  // ইনিশিয়ালাইজেশন
-  const app = initializeApp(firebaseConfig);
-  const rtdb = getDatabase(app);
-  const dbRef = ref(rtdb, 'ycb_data');
-
-  // ১. ক্লাউড থেকে ডেটা আনা এবং লোকাল ডাটাবেজ আপডেট করা
-  onValue(dbRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      db = data; // বিদ্যমান 'db' ভেরিয়েবল আপডেট
-      localStorage.setItem('ycb_ultra_v5', JSON.stringify(db));
-      // যদি ইউজার বর্তমানে অ্যাডমিন প্যানেলে থাকে, তবে ভিউ রিফ্রেশ করা
-      if (!document.getElementById('admin-dashboard').classList.contains('hidden-view')) {
-         setTab('db');
-      }
-    }
-  });
-
-  // ২. আপনার বিদ্যমান ফাংশনগুলোর সাথে ফায়ারবেস সিঙ্ক হুক করা
-  // আমরা মূল ফাংশন পরিবর্তন না করে সেগুলোকে 'Wrap' করছি
-  
-  const originalSubmit = window.submitApplication;
-  window.submitApplication = function(...args) {
-    originalSubmit(...args); // আগের কাজ আগে হবে
-    set(dbRef, db); // তারপর ফায়ারবেসে সিঙ্ক হবে
-  };
-
-  const originalAction = window.actionMember;
-  window.actionMember = function(...args) {
-    originalAction(...args);
-    set(dbRef, db);
-  };
-
-  const originalSaveConfig = window.saveConfig;
-  window.saveConfig = function() {
-    originalSaveConfig();
-    set(ref(rtdb, 'ycb_config'), config);
-  };
-
-  // শুরুতে কনফিগারেশন লোড করা
-  onValue(ref(rtdb, 'ycb_config'), (snapshot) => {
-    const remoteConfig = snapshot.val();
-    if (remoteConfig) {
-      config = remoteConfig;
-      localStorage.setItem('ycb_config_v5', JSON.stringify(config));
-      renderHome();
-    }
-  });
-
-  console.log("Firebase Synced with YCB HUB safely.");
-</script>
 </body>
 </html>

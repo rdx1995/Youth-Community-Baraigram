@@ -693,5 +693,72 @@
 
         renderHome();
     </script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // আপনার দেওয়া কনফিগারেশন
+  const firebaseConfig = {
+    apiKey: "AIzaSyCDTAotZxUVqL9hL9_rt0oub-K9S9j60Wc",
+    authDomain: "youth-community-baraigram.firebaseapp.com",
+    databaseURL: "https://youth-community-baraigram-default-rtdb.firebaseio.com",
+    projectId: "youth-community-baraigram",
+    storageBucket: "youth-community-baraigram.firebasestorage.app",
+    messagingSenderId: "465895578974",
+    appId: "1:465895578974:web:c3bd8ceffe55ce7c6b83cf",
+    measurementId: "G-STH0PRECV8"
+  };
+
+  // ইনিশিয়ালাইজেশন
+  const app = initializeApp(firebaseConfig);
+  const rtdb = getDatabase(app);
+  const dbRef = ref(rtdb, 'ycb_data');
+
+  // ১. ক্লাউড থেকে ডেটা আনা এবং লোকাল ডাটাবেজ আপডেট করা
+  onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      db = data; // বিদ্যমান 'db' ভেরিয়েবল আপডেট
+      localStorage.setItem('ycb_ultra_v5', JSON.stringify(db));
+      // যদি ইউজার বর্তমানে অ্যাডমিন প্যানেলে থাকে, তবে ভিউ রিফ্রেশ করা
+      if (!document.getElementById('admin-dashboard').classList.contains('hidden-view')) {
+         setTab('db');
+      }
+    }
+  });
+
+  // ২. আপনার বিদ্যমান ফাংশনগুলোর সাথে ফায়ারবেস সিঙ্ক হুক করা
+  // আমরা মূল ফাংশন পরিবর্তন না করে সেগুলোকে 'Wrap' করছি
+  
+  const originalSubmit = window.submitApplication;
+  window.submitApplication = function(...args) {
+    originalSubmit(...args); // আগের কাজ আগে হবে
+    set(dbRef, db); // তারপর ফায়ারবেসে সিঙ্ক হবে
+  };
+
+  const originalAction = window.actionMember;
+  window.actionMember = function(...args) {
+    originalAction(...args);
+    set(dbRef, db);
+  };
+
+  const originalSaveConfig = window.saveConfig;
+  window.saveConfig = function() {
+    originalSaveConfig();
+    set(ref(rtdb, 'ycb_config'), config);
+  };
+
+  // শুরুতে কনফিগারেশন লোড করা
+  onValue(ref(rtdb, 'ycb_config'), (snapshot) => {
+    const remoteConfig = snapshot.val();
+    if (remoteConfig) {
+      config = remoteConfig;
+      localStorage.setItem('ycb_config_v5', JSON.stringify(config));
+      renderHome();
+    }
+  });
+
+  console.log("Firebase Synced with YCB HUB safely.");
+</script>
 </body>
 </html>

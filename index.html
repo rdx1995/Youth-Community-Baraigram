@@ -2,258 +2,181 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YCB HUB | ইয়ুথ কমিউনিটি বড়াইগ্রাম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; color: #1e293b; overflow-x: hidden; touch-action: manipulation; }
         .hidden-view { display: none !important; }
         
-        .marquee { background: #0f172a; color: #fb923c; padding: 12px 0; overflow: hidden; border-bottom: 3px solid #f97316; }
-        .marquee-content { display: flex; animation: marquee 30s linear infinite; width: max-content; }
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
+
+        /* Marquee */
+        .marquee { background: #0f172a; color: #fb923c; padding: 10px 0; overflow: hidden; border-bottom: 2px solid #f97316; }
+        .marquee-content { display: flex; animation: marquee 25s linear infinite; width: max-content; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .premium-hover { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .premium-hover:hover { transform: translateY(-10px); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1); }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); }
         
+        /* Mobile Optimization */
+        @media (max-width: 640px) {
+            h2 { font-size: 2.25rem !important; line-height: 1.2 !important; }
+            .container { padding-left: 1rem; padding-right: 1rem; }
+            #planGrid { grid-template-cols: 1fr !important; }
+            .premium-hover:hover { transform: none; } /* Disable heavy hover on mobile */
+        }
+
         /* ID CARD STYLES */
-        .id-card-wrapper { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .id-card-container { width: 320px; height: 500px; perspective: 1000px; }
+        .id-card-container { width: 300px; height: 480px; perspective: 1000px; margin: 0 auto; }
         .id-card-flip { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
-        .id-card-container:hover .id-card-flip { transform: rotateY(180deg); }
-        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white; border: 1px solid #e2e8f0; }
+        .id-card-container:active .id-card-flip { transform: rotateY(180deg); }
+        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; border: 1px solid #e2e8f0; }
         .id-back { transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: space-between; padding: 20px; text-align: center; }
 
-        .invoice-bg { background: linear-gradient(135deg, #fff 0%, #fff7ed 100%); }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 10px; }
 
         @media print { 
             .no-print { display: none !important; } 
-            body { background: white; margin: 0; padding: 0; } 
-            .id-card-wrapper { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10mm; }
-            .id-card-container { width: 85.6mm; height: 130mm; box-shadow: none; border: 1px solid #ddd; }
-            .id-card-flip { transform: none !important; }
-            .id-front { position: relative; display: block; }
-            .id-back { position: relative; transform: none !important; display: block; margin-top: 5mm; }
-            #invoicePrint { border: 2px solid #eee; box-shadow: none; margin: 0 auto; }
-        }
-
-        /* Desktop Optimization */
-        @media (min-width: 1024px) {
-            .container { max-width: 1200px; }
-            #home h2 { font-size: 5rem; }
+            body { background: white; }
+            #invoicePrint { border: 1px solid #ccc; box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
-    <div id="adOverlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6 no-print bg-black/40 backdrop-blur-sm">
-        <div class="ad-content relative bg-white rounded-[3rem] overflow-hidden max-w-lg w-full shadow-2xl scale-90 opacity-0 transition-all duration-500" id="adBox">
-            <button onclick="closeAd()" class="absolute top-6 right-6 w-12 h-12 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center z-10 hover:bg-red-500 transition"><i data-lucide="x"></i></button>
-            <img id="adImg" src="" class="w-full h-auto object-cover min-h-[300px] max-h-[500px] bg-slate-100">
-            <div class="p-8 text-center bg-gradient-to-b from-white to-orange-50">
-                <h4 class="text-2xl font-black mb-2 text-orange-600">বিশেষ ঘোষণা</h4>
-                <p class="text-sm font-bold text-slate-500">আমাদের নতুন মেম্বারশিপ ড্রাইভ শুরু হয়েছে। আজই যুক্ত হোন!</p>
-            </div>
-        </div>
-    </div>
-
     <div class="marquee no-print">
         <div class="marquee-content" id="marqueeText"></div>
     </div>
 
-    <nav class="sticky top-0 z-50 px-4 md:px-12 py-5 flex justify-between items-center glass-card no-print">
-        <div class="flex items-center gap-3 md:gap-4">
-            <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-tr from-orange-600 to-amber-400 rounded-2xl flex items-center justify-center text-white shadow-lg"><i data-lucide="zap" fill="currentColor"></i></div>
+    <nav class="sticky top-0 z-50 px-4 md:px-10 py-4 flex justify-between items-center glass-card no-print">
+        <div class="flex items-center gap-2 md:gap-3 cursor-pointer" onclick="showPage('home')">
+            <div class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg"><i data-lucide="zap" fill="currentColor" size="20"></i></div>
             <div>
-                <h1 class="text-xl md:text-2xl font-black leading-none tracking-tight">YCB <span class="text-orange-500">HUB</span></h1>
-                <p class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Youth Community Baraigram</p>
+                <h1 class="text-lg md:text-xl font-black leading-none">YCB <span class="text-orange-500">HUB</span></h1>
+                <p class="text-[7px] font-bold text-slate-400 uppercase tracking-widest">Baraigram</p>
             </div>
         </div>
-        <div class="flex items-center gap-2 md:gap-6">
-            <button onclick="showPage('home')" class="hidden md:block text-[11px] font-black uppercase tracking-widest hover:text-orange-500 transition">Home</button>
-            <button onclick="showPage('member-login')" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black hover:bg-orange-600 transition shadow-lg">Login</button>
-            <div class="flex gap-2">
-                <button onclick="openSystemAuth('press')" id="pressNavBtn" class="p-3 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition"><i data-lucide="printer" size="20"></i></button>
-                <button onclick="openSystemAuth('admin')" class="p-3 bg-slate-100 text-slate-400 rounded-lg hover:text-orange-500 transition"><i data-lucide="shield-check" size="20"></i></button>
-            </div>
+        <div class="flex items-center gap-2">
+            <button onclick="showPage('member-login')" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-[10px] font-black hover:bg-orange-600 transition">LOGIN</button>
+            <button onclick="openSystemAuth('press')" id="pressNavBtn" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition"><i data-lucide="printer" size="18"></i></button>
+            <button onclick="openSystemAuth('admin')" class="p-2 bg-slate-100 text-slate-400 rounded-lg hover:text-orange-500 transition"><i data-lucide="shield-check" size="18"></i></button>
         </div>
     </nav>
 
     <main class="min-h-screen">
         
         <section id="home" class="no-print">
-            <div class="container mx-auto px-6 py-20 text-center">
-                <div class="inline-block px-6 py-2 bg-orange-100 text-orange-600 rounded-full text-[11px] font-black uppercase tracking-[4px] mb-8">সংগঠন নয়, একটি পরিবার</div>
-                <h2 class="text-4xl md:text-8xl font-black text-slate-900 mb-8 leading-[1.1] tracking-tighter">
-                    ইয়ুথ কমিউনিটি <span class="text-orange-500">বড়াইগ্রাম</span>
-                </h2>
-                <p class="text-slate-500 font-bold italic mb-20 text-xl">"বড়াইগ্রামের ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় তারুণ্য"</p>
+            <div class="container mx-auto px-4 py-12 text-center">
+                <div class="inline-block px-4 py-1 bg-orange-100 text-orange-600 rounded-full text-[9px] font-black uppercase tracking-widest mb-6">সংগঠন নয়, একটি পরিবার</div>
+                <h2 class="text-3xl md:text-6xl font-black text-slate-900 mb-6 leading-tight">ইয়ুথ কমিউনিটি <span class="text-orange-500">বড়াইগ্রাম</span></h2>
+                <p class="text-slate-500 font-bold mb-12 text-sm md:text-lg">"বড়াইগ্রামের ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় তারুণ্য"</p>
                 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-32" id="planGrid"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-20" id="planGrid"></div>
 
-                <div class="bg-white p-12 md:p-24 rounded-[4rem] text-left border mb-32 relative overflow-hidden shadow-sm">
-                    <i data-lucide="users-2" class="absolute right-[-60px] bottom-[-60px] text-slate-50 opacity-10" size="400"></i>
-                    <h3 class="text-4xl md:text-5xl font-black mb-10">আমাদের সম্পর্কে</h3>
-                    <p class="text-slate-600 font-bold leading-relaxed max-w-5xl text-xl md:text-2xl">
-                        ইয়ুথ কমিউনিটি বড়াইগ্রাম কেবল একটি সংগঠন নয়, এটি বড়াইগ্রামের একঝাঁক স্বপ্নবাজ ও উদ্যমী যুবকের সমষ্ঠি। আমাদের লক্ষ্য বড়াইগ্রামের হাজার বছরের ঐতিহ্য রক্ষা করা এবং আধুনিক প্রযুক্তির সমন্বয়ে একটি স্মার্ট উপজেলা গড়ে তোলা। আমরা বিশ্বাস করি, ঐক্যবদ্ধ তরুণরাই পারে সামাজিক পরিবর্তন এবং বড়াইগ্রামকে একটি রোল মডেলে রূপান্তর করতে।
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-32">
-                    <div class="p-12 bg-orange-50 rounded-[3.5rem] text-left border border-orange-100">
-                        <div class="w-16 h-16 bg-orange-500 text-white rounded-3xl flex items-center justify-center mb-8 shadow-xl"><i data-lucide="target" size="32"></i></div>
-                        <h4 class="text-3xl font-black text-slate-900 mb-6">আমাদের মিশন</h4>
-                        <p class="text-slate-600 font-bold text-base leading-relaxed">আমাদের মিশন হলো বড়াইগ্রামের যুবসমাজকে একটি প্ল্যাটফর্মে একত্রিত করা, মেম্বারদের দক্ষতা ও ক্যারিয়ার উন্নয়নে সহায়তা করা এবং সংকটের মুহূর্তে সাধারণ মানুষের পাশে দাঁড়ানো।</p>
-                    </div>
-                    <div class="p-12 bg-slate-900 rounded-[3.5rem] text-left text-white">
-                        <div class="w-16 h-16 bg-sky-500 text-white rounded-3xl flex items-center justify-center mb-8 shadow-xl"><i data-lucide="eye" size="32"></i></div>
-                        <h4 class="text-3xl font-black mb-6">আমাদের ভিশন</h4>
-                        <p class="text-slate-400 font-bold text-base leading-relaxed">বড়াইগ্রামের ঐতিহ্যবাহী মেলা এবং সামাজিক উৎসবগুলোকে পুনরুজ্জীবিত করার পাশাপাশি একটি ডিজিটাল ও স্বাবলম্বী তরুণ সমাজ গড়ে তোলা।</p>
-                    </div>
-                </div>
-
-                <div class="mb-32">
-                    <h3 class="text-4xl font-black mb-20 underline decoration-orange-500 decoration-[6px] underline-offset-[12px]">সদস্যদের বিশেষ সুবিধাসমূহ</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="award" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">পরিচয়পত্র</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">অফিশিয়াল মেম্বারশিপ আইডি কার্ড যা আপনার স্বাতন্ত্র্য প্রকাশ করে।</p>
+                <div class="mb-20">
+                    <h3 class="text-2xl font-black mb-10 underline decoration-orange-500 decoration-4 underline-offset-8">সদস্যদের সুবিধাসমূহ</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="award" class="text-orange-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">পরিচয়পত্র</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">অফিশিয়াল মেম্বারশিপ স্মার্ট আইডি কার্ড।</p>
                         </div>
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-pink-100 text-pink-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="gift" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">ব্যক্তিগত কেয়ার</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">জন্মদিন এবং বিবাহ বার্ষিকীতে বিশেষ সারপ্রাইজ ও শুভেচ্ছা।</p>
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="gift" class="text-pink-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">শুভেচ্ছা উপহার</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">জন্মদিন ও বিশেষ দিনে সারপ্রাইজ গিফট।</p>
                         </div>
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-blue-100 text-blue-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="graduation-cap" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">ক্যারিয়ার ও শিক্ষা</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">উচ্চশিক্ষায় গাইডলাইন এবং নিয়মিত জব আপডেট ও ক্যারিয়ার প্রশিক্ষণ।</p>
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="graduation-cap" class="text-blue-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">ক্যারিয়ার সাপোর্ট</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">ফ্রি স্কিল ট্রেনিং ও চাকরির আপডেট।</p>
                         </div>
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-emerald-100 text-emerald-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="droplets" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">জরুরী রক্তদান</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">বড়াইগ্রামের বৃহত্তম ব্লাড ডোনার ডাটাবেজে এক্সেস এবং জরুরী প্রয়োজনে সহায়তা।</p>
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="droplets" class="text-red-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">রক্তদান সেবা</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">জরুরী প্রয়োজনে রক্তদাতার সুব্যবস্থা।</p>
                         </div>
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-purple-100 text-purple-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="briefcase" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">বিজনেস প্রমোশন</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">প্ল্যাটফর্মের মাধ্যমে মেম্বারদের নিজস্ব ব্যবসা বা উদ্যোগের ফ্রি মার্কেটিং সুবিধা।</p>
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="briefcase" class="text-purple-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">বিজনেস প্রমোশন</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">নিজস্ব উদ্যোগের ফ্রি মার্কেটিং সুবিধা।</p>
                         </div>
-                        <div class="bg-white p-10 rounded-[3rem] border text-left premium-hover">
-                            <div class="w-12 h-12 bg-amber-100 text-amber-500 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="heart-handshake" size="24"></i></div>
-                            <h5 class="text-xl font-black mb-3">সামাজিক সুরক্ষা</h5>
-                            <p class="text-xs font-bold text-slate-400 leading-relaxed uppercase tracking-wider">মেম্বারদের যেকোনো সামাজিক বা আইনি সমস্যায় সংগঠনের পক্ষ থেকে সর্বোচ্চ সহযোগিতা।</p>
+                        <div class="bg-white p-6 rounded-3xl border text-left shadow-sm">
+                            <i data-lucide="heart-handshake" class="text-emerald-500 mb-4"></i>
+                            <h5 class="text-lg font-black mb-1">সামাজিক ঐক্য</h5>
+                            <p class="text-[11px] text-slate-500 font-bold leading-relaxed uppercase">বিপদ-আপদে সংগঠনের পাশে থাকা।</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="max-w-4xl mx-auto text-left space-y-8">
-                    <h3 class="text-4xl font-black mb-16 text-center">সাধারণ জিজ্ঞাসা (FAQ)</h3>
-                    <div class="bg-white p-10 rounded-[3rem] border shadow-sm">
-                        <p class="text-xl font-black text-orange-600 mb-3">১. মেম্বারশিপের অর্থ কোথায় ব্যয় করা হবে?</p>
-                        <p class="text-lg font-bold text-slate-500">আমাদের প্রতিটি মেম্বারশিপ থেকে প্রাপ্ত অর্থ বড়াইগ্রামের ঐতিহ্যবাহী মেলা আয়োজন এবং সামাজিক উন্নয়নমূলক কাজে স্বচ্ছতার সাথে ব্যয় করা হয়।</p>
-                    </div>
-                    <div class="bg-white p-10 rounded-[3rem] border shadow-sm">
-                        <p class="text-xl font-black text-orange-600 mb-3">২. আমি কি বড়াইগ্রামের বাইরে থেকেও যুক্ত হতে পারি?</p>
-                        <p class="text-lg font-bold text-slate-500">হ্যাঁ, বড়াইগ্রামের স্থায়ী বাসিন্দা বা শুভাকাঙ্ক্ষী হয়ে থাকলে বিশ্বের যেকোনো প্রান্ত থেকে আমাদের সাথে যুক্ত হতে পারেন।</p>
-                    </div>
+                <div class="bg-white p-8 md:p-16 rounded-[2.5rem] text-left border mb-20 shadow-sm">
+                    <h3 class="text-2xl font-black mb-6">আমাদের লক্ষ্য</h3>
+                    <p class="text-slate-600 font-bold leading-relaxed text-sm md:text-base">বড়াইগ্রামের হাজার বছরের ঐতিহ্য রক্ষা করা এবং আধুনিক প্রযুক্তির সমন্বয়ে একটি স্মার্ট উপজেলা গড়ে তোলাই আমাদের প্রধান উদ্দেশ্য। ঐক্যবদ্ধ তরুণ সমাজই পারে আমাদের প্রাণের বড়াইগ্রামকে একটি রোল মডেলে রূপান্তর করতে।</p>
                 </div>
             </div>
         </section>
 
-        <section id="system-login" class="hidden-view max-w-md mx-auto py-32 px-6 no-print">
-            <div class="bg-slate-900 p-12 rounded-[3.5rem] text-center text-white shadow-2xl relative">
-                <button onclick="showPage('home')" class="absolute top-8 right-8 text-slate-500 hover:text-white"><i data-lucide="x"></i></button>
-                <div id="authIcon" class="text-orange-400 flex justify-center mb-10"><i data-lucide="shield-alert" size="80"></i></div>
-                <h3 id="authTitle" class="text-3xl font-black mb-3">System Access</h3>
-                <p id="authSub" class="text-[10px] font-bold text-slate-500 uppercase tracking-[5px] mb-12">Verification Required</p>
-                <input id="sysPass" type="password" placeholder="Passcode" class="w-full p-6 bg-white/5 border border-white/10 rounded-2xl mb-10 font-black text-center text-3xl tracking-[12px] outline-none focus:border-orange-500 text-orange-500">
-                <button onclick="handleSystemAuth()" class="w-full bg-orange-500 text-white py-5 rounded-2xl font-black shadow-lg hover:bg-orange-600 transition uppercase text-xs tracking-widest">Confirm Access</button>
+        <section id="application-form" class="hidden-view container mx-auto px-4 py-8">
+            <div id="formContent" class="bg-white max-w-4xl mx-auto p-6 md:p-12 rounded-[2.5rem] shadow-xl border relative"></div>
+        </section>
+
+        <section id="system-login" class="hidden-view max-w-xs mx-auto py-24 px-4 no-print">
+            <div class="bg-slate-900 p-8 rounded-[2rem] text-center text-white shadow-2xl">
+                <h3 id="authTitle" class="text-xl font-black mb-6">Security Access</h3>
+                <input id="sysPass" type="password" placeholder="Passcode" class="w-full p-4 bg-white/10 rounded-xl mb-6 text-center text-2xl tracking-[10px] outline-none border border-white/20">
+                <button onclick="handleSystemAuth()" class="w-full bg-orange-500 text-white py-4 rounded-xl font-black text-xs uppercase tracking-widest">Verify</button>
+                <button onclick="showPage('home')" class="mt-4 text-[10px] font-bold text-slate-500 uppercase">Back</button>
             </div>
         </section>
 
-        <section id="member-login" class="hidden-view max-w-md mx-auto py-32 px-6 no-print">
-            <div class="bg-white p-12 rounded-[3.5rem] shadow-2xl border text-center relative overflow-hidden">
-                <button onclick="showPage('home')" class="absolute top-8 right-8 text-slate-300 hover:text-red-500"><i data-lucide="x"></i></button>
-                <div class="w-24 h-24 bg-orange-50 text-orange-500 rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-inner"><i data-lucide="fingerprint" size="48"></i></div>
-                <h3 class="text-3xl font-black mb-3">মেম্বার প্যানেল</h3>
-                <p class="text-[11px] font-bold text-slate-400 mb-12 uppercase tracking-widest">নিরাপদ লগইন</p>
-                <div class="space-y-5">
-                    <input id="memMob" type="tel" placeholder="মোবাইল নম্বর" class="w-full p-5 bg-slate-50 border rounded-2xl font-bold outline-none focus:ring-2 focus:ring-orange-500">
-                    <input id="memNid" type="text" placeholder="NID শেষ ৪ সংখ্যা" class="w-full p-5 bg-slate-50 border rounded-2xl font-bold outline-none focus:ring-2 focus:ring-orange-500">
-                    <button onclick="authMember()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-lg hover:bg-orange-600 transition flex items-center justify-center gap-3">লগইন করুন <i data-lucide="arrow-right" size="18"></i></button>
-                </div>
+        <section id="member-login" class="hidden-view max-w-xs mx-auto py-24 px-4 no-print">
+            <div class="bg-white p-8 rounded-[2rem] shadow-2xl border text-center">
+                <div class="w-16 h-16 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner"><i data-lucide="fingerprint" size="32"></i></div>
+                <h3 class="text-xl font-black mb-2">মেম্বার প্যানেল</h3>
+                <p class="text-[10px] font-bold text-slate-400 mb-8 uppercase">নিরাপদ লগইন</p>
+                <input id="memMob" type="tel" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-slate-50 border rounded-xl font-bold mb-4 text-sm outline-none focus:ring-2 focus:ring-orange-500">
+                <input id="memNid" type="text" placeholder="NID শেষ ৪ সংখ্যা" class="w-full p-4 bg-slate-50 border rounded-xl font-bold mb-6 text-sm outline-none focus:ring-2 focus:ring-orange-500">
+                <button onclick="authMember()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black shadow-lg flex items-center justify-center gap-2 text-sm">লগইন করুন</button>
+                <button onclick="showPage('home')" class="mt-4 text-[10px] font-bold text-slate-400 uppercase">ফিরে যান</button>
             </div>
         </section>
 
-        <section id="application-form" class="hidden-view container mx-auto px-4 md:px-12 py-16">
-            <div id="formContent" class="bg-white max-w-6xl mx-auto p-10 md:p-20 rounded-[5rem] shadow-2xl border-4 border-slate-50 relative overflow-hidden"></div>
-        </section>
-
-        <section id="admin-dashboard" class="hidden-view container mx-auto px-6 py-16 no-print">
-            <div class="flex flex-col lg:flex-row gap-12">
-                <div class="lg:w-1/4 space-y-6">
-                    <div class="p-10 bg-slate-900 rounded-[3rem] text-white shadow-xl relative overflow-hidden">
-                        <i data-lucide="layout-dashboard" class="absolute -right-6 -top-6 text-white/5" size="120"></i>
-                        <p id="dashRole" class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Admin Control</p>
-                        <h4 class="text-2xl font-black">YCB System</h4>
+        <section id="admin-dashboard" class="hidden-view container mx-auto px-4 py-8 no-print">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <div class="lg:w-1/4">
+                    <div class="p-6 bg-slate-900 rounded-2xl text-white shadow-lg mb-4">
+                        <p id="dashRole" class="text-[8px] font-black text-orange-500 uppercase mb-1">System Control</p>
+                        <h4 class="text-lg font-black">Admin Panel</h4>
                     </div>
-                    <div class="bg-white p-4 rounded-[3rem] border shadow-sm space-y-2">
-                        <button onclick="setTab('db')" class="tab-btn w-full text-left p-5 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase flex items-center justify-between group transition"><span><i data-lucide="database" class="inline mr-3 opacity-40"></i> ডাটাবেজ</span> <i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>
-                        <div id="adminOnlyTabs" class="space-y-2">
-                            <button onclick="setTab('approve')" class="tab-btn w-full text-left p-5 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase flex items-center justify-between group transition"><span><i data-lucide="user-plus" class="inline mr-3 opacity-40"></i> পেন্ডিং</span> <i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>
-                            <button onclick="setTab('finance')" class="tab-btn w-full text-left p-5 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase flex items-center justify-between group transition"><span><i data-lucide="wallet" class="inline mr-3 opacity-40"></i> হিসাব</span> <i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>
-                            <button onclick="setTab('settings')" class="tab-btn w-full text-left p-5 hover:bg-slate-50 rounded-2xl font-black text-xs uppercase flex items-center justify-between group transition"><span><i data-lucide="settings" class="inline mr-3 opacity-40"></i> সেটিংস ও কন্ট্রোল</span> <i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>
+                    <div class="bg-white p-2 rounded-2xl border shadow-sm flex flex-col gap-1">
+                        <button onclick="setTab('db')" class="p-4 hover:bg-slate-50 rounded-xl font-black text-[10px] text-left uppercase flex justify-between items-center group"><span><i data-lucide="database" class="inline mr-2 opacity-40"></i> ডাটাবেজ</span></button>
+                        <div id="adminOnlyTabs" class="flex flex-col gap-1">
+                            <button onclick="setTab('approve')" class="p-4 hover:bg-slate-50 rounded-xl font-black text-[10px] text-left uppercase"><span><i data-lucide="user-plus" class="inline mr-2 opacity-40"></i> পেন্ডিং</span></button>
+                            <button onclick="setTab('finance')" class="p-4 hover:bg-slate-50 rounded-xl font-black text-[10px] text-left uppercase"><span><i data-lucide="wallet" class="inline mr-2 opacity-40"></i> হিসাব</span></button>
+                            <button onclick="setTab('settings')" class="p-4 hover:bg-slate-50 rounded-xl font-black text-[10px] text-left uppercase"><span><i data-lucide="settings" class="inline mr-2 opacity-40"></i> সেটিংস</span></button>
                         </div>
+                        <button onclick="location.reload()" class="p-4 text-red-500 font-black text-[10px] text-left uppercase border-t">Logout</button>
                     </div>
-                    <button onclick="location.reload()" class="w-full p-6 bg-red-50 text-red-600 rounded-3xl font-black text-xs uppercase flex items-center justify-center gap-3 hover:bg-red-600 hover:text-white transition shadow-sm"><i data-lucide="power" size="18"></i> Sign Out</button>
                 </div>
-                <div class="lg:w-3/4">
-                    <div id="tabDisplay" class="bg-white p-10 md:p-16 rounded-[4rem] border shadow-xl min-h-[700px]"></div>
-                </div>
+                <div class="lg:w-3/4 bg-white p-6 rounded-3xl border shadow-sm min-h-[500px]" id="tabDisplay"></div>
             </div>
         </section>
 
-        <section id="member-view" class="hidden-view container mx-auto px-6 py-20">
+        <section id="member-view" class="hidden-view container mx-auto px-4 py-12">
             <div id="profileContent"></div>
         </section>
 
     </main>
 
-    <footer class="bg-white border-t pt-24 pb-12 no-print">
-        <div class="container mx-auto px-12 grid grid-cols-1 md:grid-cols-3 gap-20 mb-20">
-            <div>
-                <h1 class="text-4xl font-black mb-8">YCB <span class="text-orange-500">HUB</span></h1>
-                <p class="text-slate-400 font-bold text-base leading-relaxed">বড়াইগ্রামের যুব সমাজকে প্রযুক্তি এবং ঐক্যের মাধ্যমে একতাবদ্ধ করার ডিজিটাল প্ল্যাটফর্ম।</p>
-            </div>
-            <div class="space-y-6">
-                <h4 class="font-black text-[11px] uppercase text-slate-300 tracking-[5px]">কন্টাক্ট ইনফো</h4>
-                <div class="flex flex-col gap-4 font-black text-slate-600 text-base">
-                    <p class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl"><i data-lucide="phone" class="text-orange-500" size="20"></i> ০১৭৬৮৫৭৯৯৫৭</p>
-                    <p class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl"><i data-lucide="map-pin" class="text-orange-500" size="20"></i> বড়াইগ্রাম, নাটোর।</p>
-                </div>
-            </div>
-            <div>
-                <h4 class="font-black text-[11px] uppercase text-slate-300 tracking-[5px] mb-8">ডেভেলপার</h4>
-                <div onclick="window.open('https://wa.me/8801763752653')" class="flex items-center gap-5 bg-slate-50 p-8 rounded-[2.5rem] border-2 border-dashed border-slate-200 cursor-pointer hover:border-orange-500 transition group">
-                    <div class="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center group-hover:rotate-12 transition shadow-lg shadow-emerald-100"><i data-lucide="message-square" size="28"></i></div>
-                    <div>
-                        <p class="text-[9px] font-black text-slate-300 uppercase leading-none mb-2">Handcrafted By</p>
-                        <p class="text-lg font-black text-slate-800">Rafi Digital Solution</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="text-center pt-12 border-t">
-            <p class="text-[10px] font-black text-slate-300 uppercase tracking-[12px]">© 2026 Youth Community Baraigram</p>
+    <footer class="bg-white border-t py-10 no-print">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-2xl font-black mb-4">YCB <span class="text-orange-500">HUB</span></h1>
+            <p class="text-slate-400 font-bold text-xs mb-8">বড়াইগ্রামের তারুণ্যের একতাবদ্ধ প্ল্যাটফর্ম।</p>
+            <div class="text-[9px] font-black text-slate-300 uppercase tracking-[8px]">© 2026 Rafi Digital Solution</div>
         </div>
     </footer>
 
@@ -261,6 +184,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
+        // Firebase Config (Keep same)
         const firebaseConfig = {
             apiKey: "AIzaSyCDTAotZxUVqL9hL9_rt0oub-K9S9j60Wc",
             authDomain: "youth-community-baraigram.firebaseapp.com",
@@ -275,36 +199,32 @@
         const app = initializeApp(firebaseConfig);
         const rdb = getDatabase(app);
 
-        // Global objects that the original script uses
         window.db = [];
-        window.config = JSON.parse(localStorage.getItem('ycb_config_v5')) || {
+        window.config = {
             adminPass: 'rafi2026', pressPass: 'press2026', pressStatus: true,
             payNum: '01763752653', notice: 'বড়াইগ্রামের উন্নয়নে আমাদের সাথে যুক্ত হোন।',
-            prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 },
-            adUrl: 'https://i.ibb.co/rGrdQBtL/PLPL-Osman20260411-123334.png'
+            prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 }
         };
 
-        // Sync Data
         onValue(ref(rdb, 'members'), (snapshot) => {
             const data = snapshot.val();
             window.db = data ? Object.values(data) : [];
-            if(typeof renderHome === 'function') renderHome();
+            renderHome();
         });
 
         onValue(ref(rdb, 'config'), (snapshot) => {
             if(snapshot.exists()) {
                 window.config = snapshot.val();
-                if(typeof renderHome === 'function') renderHome();
+                renderHome();
             }
         });
 
-        // Bridge functions for the existing UI
         window.syncToFirebase = (path, data) => set(ref(rdb, path), data);
         window.updateMemberStatus = (id, status) => update(ref(rdb, 'members/' + id), { status });
         window.deleteMemberFromFirebase = (id) => remove(ref(rdb, 'members/' + id));
     </script>
+
     <script>
-        // --- ORIGINAL SCRIPT START ---
         const plans = [
             {id:'Star', n:'স্টার', g:'from-orange-500 to-amber-500', c:'#f97316', i:'star'},
             {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield'},
@@ -318,113 +238,85 @@
 
         function showPage(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden-view'));
-            const target = document.getElementById(id); if(target) target.classList.remove('hidden-view');
+            const target = document.getElementById(id);
+            if(target) target.classList.remove('hidden-view');
             if(id === 'home') renderHome();
-            lucide.createIcons(); window.scrollTo(0,0);
+            lucide.createIcons();
+            window.scrollTo(0,0);
         }
 
         function renderHome() {
             if(!window.config) return;
             document.getElementById('pressNavBtn').style.display = config.pressStatus ? 'block' : 'none';
             document.getElementById('planGrid').innerHTML = plans.map(p => `
-                <div onclick="initApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-8 md:p-10 rounded-[3rem] text-white cursor-pointer relative overflow-hidden premium-hover shadow-xl">
-                    <i data-lucide="${p.i}" class="absolute -right-8 -bottom-8 opacity-20" size="140"></i>
-                    <p class="text-[10px] font-black uppercase tracking-widest opacity-60">${p.n}</p>
-                    <h4 class="text-3xl md:text-4xl font-black mt-3">৳${config.prices[p.id]}</h4>
-                    <p class="text-[9px] font-bold uppercase mt-8 tracking-widest bg-white/20 py-2.5 px-4 rounded-full w-fit">Join Now</p>
+                <div onclick="initApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-6 rounded-2xl text-white cursor-pointer relative overflow-hidden shadow-lg active:scale-95 transition-transform">
+                    <i data-lucide="${p.i}" class="absolute -right-4 -bottom-4 opacity-20" size="80"></i>
+                    <p class="text-[8px] font-black uppercase tracking-widest opacity-60">${p.n}</p>
+                    <h4 class="text-2xl font-black mt-2">৳${config.prices[p.id]}</h4>
+                    <p class="text-[7px] font-bold uppercase mt-6 tracking-widest bg-white/20 py-1.5 px-3 rounded-full w-fit">আবেদন করুন</p>
                 </div>
             `).join('');
-            document.getElementById('marqueeText').innerHTML = `<span class="mx-16 font-black text-xs uppercase tracking-widest">${config.notice}</span>`.repeat(5);
-            document.getElementById('adImg').src = config.adUrl;
+            document.getElementById('marqueeText').innerHTML = `<span class="mx-10 font-black text-[10px] uppercase tracking-widest">${config.notice}</span>`.repeat(6);
             lucide.createIcons();
-            setTimeout(() => { document.getElementById('adBox').classList.add('scale-100', 'opacity-100'); }, 1000);
-        }
-
-        function closeAd() { document.getElementById('adOverlay').style.display = 'none'; }
-
-        function handleAdUpload(e) {
-            const reader = new FileReader();
-            reader.onload = () => { 
-                config.adUrl = reader.result; 
-                const preview = document.getElementById('adPreviewArea');
-                if(preview) preview.innerHTML = `<img src="${reader.result}" class="w-full h-32 object-cover rounded-2xl shadow-md">`;
-            };
-            reader.readAsDataURL(e.target.files[0]);
         }
 
         function initApplication(pid) {
             const p = plans.find(x => x.id === pid);
             currentAppImg = "";
             document.getElementById('formContent').innerHTML = `
-                <button onclick="showPage('home')" class="absolute top-10 right-10 w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 transition no-print"><i data-lucide="x"></i></button>
-                <div class="mb-14 border-b pb-10 no-print">
-                    <span class="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white mb-6 inline-block" style="background:${p.c}">${p.n} Membership Registration</span>
-                    <h3 class="text-4xl md:text-5xl font-black text-slate-900">সদস্য আবেদন ফরম</h3>
+                <button onclick="showPage('home')" class="absolute top-6 right-6 text-red-500 no-print"><i data-lucide="x"></i></button>
+                <div class="mb-8 border-b pb-4">
+                    <span class="px-3 py-1 rounded-full text-[8px] font-black uppercase text-white mb-2 inline-block" style="background:${p.c}">${p.n} Member</span>
+                    <h3 class="text-2xl font-black text-slate-900">সদস্য আবেদন ফরম</h3>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 no-print">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div class="lg:col-span-4 text-center">
-                        <div id="photoPreview" onclick="document.getElementById('fileInput').click()" class="w-full aspect-[4/5] bg-slate-50 border-4 border-dashed rounded-[3.5rem] flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition relative overflow-hidden group" style="border-color:${p.c}33">
-                            <i data-lucide="camera" class="text-slate-200 group-hover:scale-110 transition" size="50"></i>
-                            <p class="mt-5 text-[10px] font-black text-slate-400 uppercase tracking-[3px]">ছবি আপলোড</p>
+                        <div id="photoPreview" onclick="document.getElementById('fileInput').click()" class="w-full aspect-square bg-slate-50 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative" style="border-color:${p.c}33">
+                            <i data-lucide="camera" class="text-slate-300 mb-2"></i>
+                            <p class="text-[8px] font-black text-slate-400 uppercase">ছবি আপলোড</p>
                         </div>
                         <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handlePhoto(event)">
                         
-                        <div class="mt-10 p-8 bg-slate-900 rounded-[3rem] text-white shadow-xl">
-                             <p class="text-[10px] font-black text-orange-500 uppercase mb-4 tracking-widest">বিকাশ/নগদ (Personal)</p>
-                             <h4 class="text-3xl font-black">${config.payNum}</h4>
-                             <p class="text-sm font-bold text-slate-500 mt-3">পরিমাণ: ৳${config.prices[pid]}</p>
+                        <div class="mt-6 p-6 bg-slate-900 rounded-2xl text-white">
+                             <p class="text-[8px] font-black text-orange-500 uppercase mb-2">বিকাশ/নগদ (Personal)</p>
+                             <h4 class="text-xl font-black">${config.payNum}</h4>
+                             <p class="text-[10px] font-bold text-slate-500 mt-2">পরিমাণ: ৳${config.prices[pid]}</p>
                         </div>
                     </div>
 
-                    <div class="lg:col-span-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <input id="fName" type="text" placeholder="সদস্যের নাম" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                            <input id="fFather" type="text" placeholder="পিতার নাম" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                            <input id="fMob" type="tel" placeholder="মোবাইল নম্বর" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                            <input id="fNid" type="number" placeholder="NID / জন্ম নিবন্ধন" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-400 ml-3">জন্ম তারিখ</label><input id="fDob" type="date" class="w-full p-5 bg-slate-50 border rounded-2xl font-bold outline-none"></div>
-                            <div class="space-y-2"><label class="text-[9px] font-black text-slate-400 ml-3">রক্তের গ্রুপ</label><select id="fBlood" class="w-full p-5 bg-slate-50 border rounded-2xl font-bold"><option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option></select></div>
-                            
-                            <div class="md:col-span-2 space-y-6">
-                                <h6 class="text-[11px] font-black text-slate-400 uppercase">বর্তমান ঠিকানা</h6>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <input id="fVill" type="text" placeholder="গ্রাম" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                    <input id="fUpz" type="text" value="বড়াইগ্রাম" placeholder="উপজেলা" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                    <input id="fDist" type="text" value="নাটোর" placeholder="জেলা" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                </div>
-                                <div class="flex items-center gap-3 mb-3">
-                                    <input type="checkbox" id="sameAddr" onchange="syncAddr()" class="w-4 h-4 rounded text-orange-500">
-                                    <label for="sameAddr" class="text-sm font-bold text-slate-500">বর্তমান ও স্থায়ী ঠিকানা একই</label>
-                                </div>
-                                <h6 class="text-[11px] font-black text-slate-400 uppercase">স্থায়ী ঠিকানা</h6>
-                                <div class="grid grid-cols-3 gap-4">
-                                    <input id="pVill" type="text" placeholder="গ্রাম" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                    <input id="pUpz" type="text" placeholder="উপজেলা" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                    <input id="pDist" type="text" placeholder="জেলা" class="p-5 bg-slate-50 border rounded-2xl font-bold outline-none">
-                                </div>
+                    <div class="lg:col-span-8 space-y-4">
+                        <input id="fName" type="text" placeholder="সদস্যের নাম" class="w-full p-4 bg-slate-50 border rounded-xl font-bold outline-none text-sm">
+                        <input id="fFather" type="text" placeholder="পিতার নাম" class="w-full p-4 bg-slate-50 border rounded-xl font-bold outline-none text-sm">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input id="fMob" type="tel" placeholder="মোবাইল" class="p-4 bg-slate-50 border rounded-xl font-bold outline-none text-sm">
+                            <input id="fNid" type="number" placeholder="NID / জন্ম নিবন্ধন" class="p-4 bg-slate-50 border rounded-xl font-bold outline-none text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 ml-2">জন্ম তারিখ</label><input id="fDob" type="date" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none text-xs"></div>
+                            <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 ml-2">রক্তের গ্রুপ</label><select id="fBlood" class="w-full p-3 bg-slate-50 border rounded-xl font-bold text-xs"><option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option></select></div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <h6 class="text-[9px] font-black text-slate-400 uppercase">ঠিকানা (গ্রাম, উপজেলা, জেলা)</h6>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input id="fVill" type="text" placeholder="গ্রাম" class="p-3 bg-slate-50 border rounded-xl font-bold text-xs outline-none">
+                                <input id="fUpz" type="text" value="বড়াইগ্রাম" class="p-3 bg-slate-50 border rounded-xl font-bold text-xs outline-none">
+                                <input id="fDist" type="text" value="নাটোর" class="p-3 bg-slate-50 border rounded-xl font-bold text-xs outline-none">
                             </div>
+                        </div>
 
-                            <div class="md:col-span-2 p-10 bg-orange-50 rounded-[3.5rem] border border-orange-100 mt-8">
-                                <div class="flex flex-col md:flex-row gap-5">
-                                    <input id="fTrx" type="text" placeholder="Transaction ID" class="flex-1 p-5 bg-white border rounded-2xl font-black tracking-widest">
-                                    <input id="fReceiver" type="text" placeholder="অথবা ক্যাশ গ্রহণকারীর নাম" class="flex-1 p-5 bg-white border rounded-2xl font-bold text-xs">
-                                    <button onclick="submitApplication('${pid}')" class="bg-slate-900 text-white px-12 py-5 rounded-2xl font-black text-[11px] uppercase shadow-xl hover:bg-orange-600 transition">জমা দিন</button>
-                                </div>
+                        <div class="p-6 bg-orange-50 rounded-2xl border border-orange-100 mt-4">
+                            <div class="flex flex-col gap-3">
+                                <input id="fTrx" type="text" placeholder="Transaction ID (বিকাশ/নগদ)" class="w-full p-4 bg-white border rounded-xl font-black text-sm">
+                                <input id="fReceiver" type="text" placeholder="অথবা ক্যাশ গ্রহণকারীর নাম" class="w-full p-4 bg-white border rounded-xl font-bold text-xs">
+                                <button onclick="submitApplication('${pid}')" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black text-xs uppercase shadow-lg active:scale-95 transition">আবেদন জমা দিন</button>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            showPage('application-form'); lucide.createIcons();
-        }
-
-        function syncAddr() {
-            if(document.getElementById('sameAddr').checked) {
-                document.getElementById('pVill').value = document.getElementById('fVill').value;
-                document.getElementById('pUpz').value = document.getElementById('fUpz').value;
-                document.getElementById('pDist').value = document.getElementById('fDist').value;
-            }
+            showPage('application-form');
         }
 
         function handlePhoto(e) {
@@ -442,14 +334,12 @@
             
             const mid = 'YCB-' + Math.floor(100000 + Math.random() * 900000);
             const member = {
-                id: mid,
-                name: v('fName'), father: v('fFather'), mob: v('fMob'), nid: v('fNid'),
+                id: mid, name: v('fName'), father: v('fFather'), mob: v('fMob'), nid: v('fNid'),
                 dob: v('fDob'), blood: v('fBlood'), vill: v('fVill'), upz: v('fUpz'), dist: v('fDist'),
                 trx: v('fTrx'), receiver: v('fReceiver'), plan: pid, photo: currentAppImg,
                 status: 'Pending', joined: new Date().toLocaleDateString('bn-BD')
             };
             
-            // Push to Firebase
             if(window.syncToFirebase) window.syncToFirebase('members/' + mid, member);
             renderReceipt(member);
         }
@@ -457,64 +347,29 @@
         function renderReceipt(m) {
             const p = plans.find(x => x.id === m.plan);
             document.getElementById('formContent').innerHTML = `
-                <div class="max-w-2xl mx-auto no-print text-center mb-12">
-                    <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8"><i data-lucide="check-circle" size="48"></i></div>
-                    <h3 class="text-4xl font-black mb-3">আবেদন জমা হয়েছে!</h3>
-                    <p class="text-slate-500 font-bold mb-10 text-lg">পেমেন্ট ভেরিফিকেশন সম্পন্ন হলে আইডি কার্ড সক্রিয় হবে।</p>
+                <div class="text-center no-print py-10">
+                    <i data-lucide="check-circle" class="text-emerald-500 mx-auto mb-4" size="48"></i>
+                    <h3 class="text-2xl font-black mb-2">আবেদন জমা হয়েছে!</h3>
+                    <p class="text-slate-500 text-xs font-bold mb-8">পেমেন্ট ভেরিফাই হলে আপনার আইডি কার্ড চালু হবে।</p>
                 </div>
-
-                <div id="invoicePrint" class="max-w-2xl mx-auto bg-white border-2 border-slate-100 rounded-[3.5rem] overflow-hidden shadow-2xl invoice-bg relative">
-                    <div class="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-bl-full"></div>
-                    <div class="p-12 md:p-16">
-                        <div class="flex justify-between items-start mb-12">
-                            <div>
-                                <h1 class="text-3xl font-black">YCB <span class="text-orange-500">RECEIPT</span></h1>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">Official Membership Invoice</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[11px] font-black text-slate-400 uppercase">Date</p>
-                                <p class="text-base font-black">${m.joined}</p>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-10 mb-12">
-                            <div>
-                                <p class="text-[10px] font-black text-orange-500 uppercase mb-3">Member Details</p>
-                                <p class="text-xl font-black text-slate-800">${m.name}</p>
-                                <p class="text-sm font-bold text-slate-500">${m.mob}</p>
-                                <p class="text-sm font-bold text-slate-500">${m.vill}, ${m.upz}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[10px] font-black text-orange-500 uppercase mb-3">Tracking ID</p>
-                                <p class="text-xl font-black text-slate-800">#${m.id}</p>
-                                <p class="text-sm font-bold text-slate-500">Status: <span class="text-orange-600">Pending</span></p>
-                            </div>
-                        </div>
-                        <div class="border-y border-dashed border-slate-200 py-8 mb-10">
-                            <div class="flex justify-between items-center mb-6">
-                                <span class="text-base font-bold text-slate-500">${p.n} Membership Fee</span>
-                                <span class="text-2xl font-black text-slate-800">৳${config.prices[m.plan]}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm text-slate-400">
-                                <span>Transaction/Receiver:</span>
-                                <span class="font-black text-slate-600">${m.trx || m.receiver}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-5 bg-slate-900 text-white p-8 rounded-3xl">
-                            <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="shield-check" size="28"></i></div>
-                            <div>
-                                <p class="text-[9px] font-black uppercase opacity-60 mb-1">Payment Note</p>
-                                <p class="text-sm font-bold">ভেরিফিকেশনের জন্য ট্র্যাকিং আইডিটি সংরক্ষণ করুন।</p>
-                            </div>
-                        </div>
+                <div id="invoicePrint" class="bg-white border p-6 rounded-2xl max-w-sm mx-auto shadow-sm">
+                    <div class="flex justify-between items-start mb-6">
+                        <h1 class="text-lg font-black">YCB <span class="text-orange-500">RECEIPT</span></h1>
+                        <p class="text-[9px] font-bold text-slate-400">${m.joined}</p>
                     </div>
-                    <div class="bg-slate-50 p-8 text-center border-t">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[6px]">Handcrafted by Rafi Digital Solution</p>
+                    <div class="space-y-4 text-[11px] mb-6">
+                        <p><strong>নাম:</strong> ${m.name}</p>
+                        <p><strong>মোবাইল:</strong> ${m.mob}</p>
+                        <p><strong>ট্র্যাকিং আইডি:</strong> #${m.id}</p>
+                        <p><strong>মেম্বারশিপ:</strong> ${p.n} (৳${config.prices[m.plan]})</p>
+                    </div>
+                    <div class="bg-slate-900 text-white p-4 rounded-xl text-center text-[10px]">
+                        <p>রিসিটটি স্ক্রিনশট বা প্রিন্ট করে রাখুন।</p>
                     </div>
                 </div>
-
-                <div class="flex flex-col md:flex-row gap-5 max-w-2xl mx-auto mt-12 no-print">
-                    <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-5 rounded-3xl font-black text-[11px] uppercase flex items-center justify-center gap-3"><i data-lucide="printer" size="20"></i> Download / Print</button>
-                    <button onclick="showPage('home')" class="flex-1 bg-slate-100 text-slate-400 py-5 rounded-3xl font-black text-[11px] uppercase">Back Home</button>
+                <div class="flex gap-4 mt-8 no-print">
+                    <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase">Print / Save</button>
+                    <button onclick="showPage('home')" class="flex-1 bg-slate-100 text-slate-400 py-4 rounded-xl font-black text-[10px] uppercase">Home</button>
                 </div>
             `;
             lucide.createIcons();
@@ -523,7 +378,7 @@
         function openSystemAuth(role) {
             currentRole = role;
             document.getElementById('sysPass').value = '';
-            document.getElementById('authTitle').innerText = role === 'admin' ? 'Admin Access' : 'Press Access';
+            document.getElementById('authTitle').innerText = role === 'admin' ? 'Administrator' : 'Press Center';
             showPage('system-login');
         }
 
@@ -551,151 +406,117 @@
         function renderMemberCard(u) {
             const p = plans.find(x => x.id === u.plan);
             document.getElementById('profileContent').innerHTML = `
-                <div class="max-w-4xl mx-auto flex flex-col items-center gap-12 p-10 md:p-20 bg-white rounded-[4rem] shadow-2xl border no-print">
-                    <div class="id-card-wrapper">
-                        <div class="id-card-container">
-                            <div class="id-card-flip">
-                                <div class="id-front">
-                                    <div class="h-32 relative" style="background:${p.c}">
-                                        <div class="p-5 text-white"><p class="text-[7px] font-black uppercase tracking-[5px]">Youth Community Baraigram</p></div>
-                                        <div class="absolute bottom-[-50px] left-1/2 -translate-x-1/2 w-28 h-28 bg-white p-1 rounded-2xl shadow-xl">
-                                            <img src="${u.photo}" class="w-full h-full object-cover rounded-xl">
-                                        </div>
-                                    </div>
-                                    <div class="mt-16 text-center px-6">
-                                        <h4 class="text-xl font-black text-slate-800 uppercase">${u.name}</h4>
-                                        <span class="text-[8px] font-black text-white px-4 py-1 rounded-full uppercase mt-1 inline-block" style="background:${p.c}">${p.n} Member</span>
-                                        <div class="grid grid-cols-2 gap-3 mt-8 text-left">
-                                            <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[6px] text-slate-300">ID No</p><p class="text-[9px] font-black">${u.id}</p></div>
-                                            <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[6px] text-slate-300">Blood</p><p class="text-[9px] font-black text-red-500">${u.blood}</p></div>
-                                            <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[6px] text-slate-300">Phone</p><p class="text-[9px] font-black">${u.mob}</p></div>
-                                            <div class="bg-slate-50 p-2 rounded-xl"><p class="text-[6px] text-slate-300">Joined</p><p class="text-[9px] font-black">${u.joined}</p></div>
-                                        </div>
-                                        <div class="mt-8 flex justify-between items-end opacity-50">
-                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${u.id}" class="w-8 h-8">
-                                            <div class="text-right"><img src="https://i.ibb.co/rGrdQBtL/PLPL-Osman20260411-123334.png" class="w-16 grayscale"><p class="text-[5px] font-black uppercase">Authorized</p></div>
-                                        </div>
+                <div class="max-w-md mx-auto no-print">
+                    <div class="id-card-container mb-10">
+                        <div class="id-card-flip">
+                            <div class="id-front">
+                                <div class="h-28 relative" style="background:${p.c}">
+                                    <div class="absolute bottom-[-40px] left-1/2 -translate-x-1/2 w-24 h-24 bg-white p-1 rounded-2xl shadow-lg">
+                                        <img src="${u.photo}" class="w-full h-full object-cover rounded-xl">
                                     </div>
                                 </div>
-                                <div class="id-back">
-                                    <h5 class="text-[10px] font-black uppercase text-slate-300 tracking-[5px] mb-6">Terms & Conditions</h5>
-                                    <ul class="text-[8px] text-left space-y-2 font-bold text-slate-500 list-disc px-4">
-                                        <li>এই কার্ডটি ইয়ুথ কমিউনিটি বড়াইগ্রামের সম্পত্তি।</li>
-                                        <li>যেকোনো প্রয়োজনে কার্ডটি প্রদর্শন করুন।</li>
-                                        <li>হারিয়ে গেলে দ্রুত অফিসে যোগাযোগ করুন।</li>
-                                    </ul>
-                                    <div class="border-t pt-4">
-                                        <p class="text-[8px] font-black">অফিস: লক্ষীকোল বাজার, নাটোর।</p>
-                                        <p class="text-[8px] font-bold text-slate-400 mt-1">Hotline: +8801768579957</p>
+                                <div class="mt-14 text-center px-4">
+                                    <h4 class="text-lg font-black text-slate-800 uppercase">${u.name}</h4>
+                                    <span class="text-[7px] font-black text-white px-3 py-1 rounded-full uppercase inline-block" style="background:${p.c}">${p.n} Member</span>
+                                    <div class="grid grid-cols-2 gap-2 mt-6 text-left text-[9px]">
+                                        <div class="bg-slate-50 p-2 rounded-lg"><p class="text-slate-300">ID No</p><p class="font-black">${u.id}</p></div>
+                                        <div class="bg-slate-50 p-2 rounded-lg"><p class="text-slate-300">Blood</p><p class="font-black text-red-500">${u.blood}</p></div>
+                                        <div class="bg-slate-50 p-2 rounded-lg"><p class="text-slate-300">Phone</p><p class="font-black">${u.mob}</p></div>
+                                        <div class="bg-slate-50 p-2 rounded-lg"><p class="text-slate-300">Joined</p><p class="font-black">${u.joined}</p></div>
                                     </div>
+                                    <div class="mt-6 flex justify-between items-end opacity-40">
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=30x30&data=${u.id}" class="w-6 h-6">
+                                        <p class="text-[5px] font-black uppercase tracking-widest">Official Member</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="id-back p-6 flex flex-col justify-between">
+                                <h5 class="text-[9px] font-black uppercase text-slate-300">Terms & Conditions</h5>
+                                <ul class="text-[8px] text-left space-y-1 font-bold text-slate-400 list-disc px-4">
+                                    <li>এটি ইয়ুথ কমিউনিটি বড়াইগ্রামের একটি ডিজিটাল স্মার্ট কার্ড।</li>
+                                    <li>কার্ডটি প্রদর্শনের মাধ্যমে মেম্বার সুযোগ-সুবিধা উপভোগ করা যাবে।</li>
+                                </ul>
+                                <div class="border-t pt-2">
+                                    <p class="text-[8px] font-black">বড়াইগ্রাম, নাটোর।</p>
+                                    <p class="text-[7px] font-bold text-slate-300">Hotline: 01768579957</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="flex flex-col gap-4 w-full max-w-sm">
-                        <button onclick="window.print()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-xs uppercase flex items-center justify-center gap-3"><i data-lucide="printer"></i> প্রিন্ট কার্ড</button>
-                        <button onclick="showPage('home')" class="w-full bg-slate-100 text-slate-400 py-5 rounded-3xl font-black text-xs uppercase">লগ আউট</button>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="window.print()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-lg">Print Card</button>
+                        <button onclick="showPage('home')" class="w-full bg-slate-100 text-slate-400 py-4 rounded-xl font-black text-[10px] uppercase">Logout</button>
                     </div>
                 </div>
-            `; lucide.createIcons();
+            `;
+            lucide.createIcons();
         }
 
         function setTab(t) {
             const display = document.getElementById('tabDisplay');
             if(t === 'db') {
                 display.innerHTML = `
-                    <div class="flex justify-between items-center mb-12">
-                        <h3 class="text-3xl font-black">ডাটাবেজ</h3>
-                        <div class="flex gap-3">
-                             <select id="catFilter" onchange="searchDB()" class="p-3 border rounded-xl text-[11px] font-black">
-                                <option value="">সব ক্যাটাগরি</option>
-                                ${plans.map(p=>`<option value="${p.id}">${p.n}</option>`).join('')}
-                             </select>
-                             <input id="dbSearch" onkeyup="searchDB()" placeholder="খুঁজুন..." class="p-4 bg-slate-50 border rounded-xl text-xs">
-                        </div>
+                    <div class="flex flex-col md:flex-row justify-between gap-4 mb-8">
+                        <h3 class="text-xl font-black">সদস্য ডাটাবেজ</h3>
+                        <input id="dbSearch" onkeyup="searchDB()" placeholder="খুঁজুন..." class="p-3 bg-slate-50 border rounded-xl text-xs outline-none">
                     </div>
-                    <div class="overflow-x-auto"><table class="w-full text-sm"><tbody class="divide-y" id="dbBody">${db.map(m => `
-                        <tr class="hover:bg-slate-50 cursor-pointer" onclick="showMemberFull('${m.id}')" data-plan="${m.plan}">
-                            <td class="py-5 flex items-center gap-5"><img src="${m.photo}" class="w-12 h-12 rounded-xl object-cover"><div class="font-black"><p>${m.name}</p></div></td>
-                            <td class="font-black text-orange-500">${m.plan}</td>
+                    <div class="overflow-x-auto"><table class="w-full text-[11px]"><tbody class="divide-y" id="dbBody">${db.map(m => `
+                        <tr class="hover:bg-slate-50 cursor-pointer" onclick="showMemberFull('${m.id}')">
+                            <td class="py-4 flex items-center gap-3"><img src="${m.photo}" class="w-10 h-10 rounded-lg object-cover font-black"><div><p>${m.name}</p><p class="text-[8px] text-orange-500">${m.plan}</p></div></td>
                             <td class="font-bold">${m.mob}</td>
-                            <td><span class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase ${m.status === 'Approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'}">${m.status}</span></td>
+                            <td><span class="px-2 py-1 rounded-md text-[8px] font-black uppercase ${m.status === 'Approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'}">${m.status}</span></td>
                         </tr>
                     `).join('')}</tbody></table></div>
                 `;
             } else if(t === 'approve') {
                 const pend = db.filter(u => u.status === 'Pending');
-                display.innerHTML = `<h3 class="text-3xl font-black mb-12">পেন্ডিং (${pend.length})</h3>
-                <div class="grid gap-5">${pend.map(m => `
-                    <div class="p-8 bg-slate-50 rounded-[2.5rem] flex items-center justify-between shadow-sm">
-                        <div class="flex items-center gap-5"><img src="${m.photo}" class="w-16 h-16 rounded-2xl object-cover"><div class="font-black"><p class="text-lg">${m.name}</p><p class="text-[10px] text-orange-500 mt-1">${m.trx || m.receiver}</p></div></div>
-                        <button onclick="actionMember('${m.id}', 'Approve')" class="bg-slate-900 text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase shadow-lg">Approve</button>
+                display.innerHTML = `<h3 class="text-xl font-black mb-8">পেন্ডিং (${pend.length})</h3>
+                <div class="grid gap-3">${pend.map(m => `
+                    <div class="p-4 bg-slate-50 rounded-2xl flex items-center justify-between">
+                        <div class="flex items-center gap-3"><img src="${m.photo}" class="w-12 h-12 rounded-xl object-cover"><div class="font-black text-xs"><p>${m.name}</p><p class="text-[8px] text-orange-500">${m.trx || m.receiver}</p></div></div>
+                        <button onclick="actionMember('${m.id}', 'Approve')" class="bg-slate-900 text-white px-4 py-2 rounded-lg font-black text-[9px] uppercase">Approve</button>
                     </div>
                 `).join('')}</div>`;
-            } else if(t === 'settings') {
-                display.innerHTML = `
-                    <h3 class="text-3xl font-black mb-12">সিস্টেম কন্ট্রোল</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="p-8 bg-slate-50 rounded-[3rem]">
-                            <h5 class="text-[11px] font-black uppercase mb-5 tracking-widest">পেমেন্ট নম্বর</h5>
-                            <input id="newPayNum" value="${config.payNum}" class="w-full p-4 border rounded-2xl mb-5 font-bold">
-                            <button onclick="config.payNum = document.getElementById('newPayNum').value; saveConfig();" class="bg-slate-900 text-white px-8 py-3 rounded-xl text-[10px] font-black">UPDATE</button>
-                        </div>
-                        <div class="p-8 bg-slate-50 rounded-[3rem]">
-                            <h5 class="text-[11px] font-black uppercase mb-5 tracking-widest">প্রেস লগইন (Status: ${config.pressStatus})</h5>
-                            <input id="newPressPass" value="${config.pressPass}" class="w-full p-4 border rounded-2xl mb-5 font-bold">
-                            <div class="flex gap-3">
-                                <button onclick="config.pressPass = document.getElementById('newPressPass').value; saveConfig();" class="bg-slate-900 text-white px-5 py-3 rounded-xl text-[10px] font-black">SAVE PASS</button>
-                                <button onclick="config.pressStatus = !config.pressStatus; saveConfig();" class="bg-orange-500 text-white px-5 py-3 rounded-xl text-[10px] font-black">ON/OFF</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 p-10 bg-slate-50 rounded-[3.5rem]">
-                        <h5 class="text-[11px] font-black uppercase mb-6 tracking-widest">অ্যাড ব্যানার ও নোটিশ</h5>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-                            <div class="space-y-4">
-                                <div id="adPreviewArea" class="w-full h-32 bg-white rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden">
-                                    <img src="${config.adUrl}" class="w-full h-full object-cover">
-                                </div>
-                                <input type="file" id="adFile" class="text-[10px]" onchange="handleAdUpload(event)">
-                            </div>
-                            <textarea id="noticeInput" class="w-full p-5 border rounded-3xl text-sm h-48 font-bold">${config.notice}</textarea>
-                        </div>
-                        <button onclick="saveAdvancedSettings()" class="bg-slate-900 text-white px-12 py-4 rounded-xl font-black text-[11px] uppercase shadow-lg">SAVE ALL CHANGES</button>
-                    </div>
-                `;
             } else if(t === 'finance') {
                 let total = 0;
                 let stats = plans.map(p => {
                     const count = db.filter(u => u.plan === p.id && u.status === 'Approved').length;
-                    const sum = count * config.prices[p.id]; total += sum;
+                    const sum = count * (config.prices[p.id] || 0); total += sum;
                     return { n: p.n, c: count, s: sum };
                 });
-                display.innerHTML = `<h3 class="text-3xl font-black mb-12">হিসাব</h3><div class="p-10 bg-emerald-500 text-white rounded-[3rem] mb-8 shadow-xl"><p class="text-[11px] uppercase opacity-60 mb-2 tracking-widest">মোট আয়</p><h2 class="text-5xl font-black">৳${total}</h2></div>
-                <div class="grid gap-4">${stats.map(s => `<div class="p-5 bg-white border rounded-2xl flex justify-between font-black text-sm"><span>${s.n} Membership</span><span>৳${s.s} (${s.c} জন)</span></div>`).join('')}</div>`;
+                display.innerHTML = `<h3 class="text-xl font-black mb-6">আর্থিক হিসাব</h3>
+                <div class="p-6 bg-emerald-500 text-white rounded-2xl mb-6 shadow-lg"><p class="text-[10px] uppercase opacity-60 mb-1">মোট আয়</p><h2 class="text-3xl font-black">৳${total}</h2></div>
+                <div class="grid gap-2">${stats.map(s => `<div class="p-3 bg-white border rounded-xl flex justify-between font-black text-[11px]"><span>${s.n} Membership</span><span>৳${s.s} (${s.c} জন)</span></div>`).join('')}</div>`;
+            } else if(t === 'settings') {
+                display.innerHTML = `
+                    <h3 class="text-xl font-black mb-8">সিস্টেম কনফিগারেশন</h3>
+                    <div class="space-y-6">
+                        <div class="p-4 bg-slate-50 rounded-2xl">
+                            <label class="text-[9px] font-black uppercase mb-2 block">পেমেন্ট নম্বর</label>
+                            <input id="newPayNum" value="${config.payNum}" class="w-full p-3 border rounded-xl font-bold text-sm mb-3">
+                            <button onclick="config.payNum = document.getElementById('newPayNum').value; saveConfig();" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-[9px] font-black">UPDATE</button>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl">
+                            <label class="text-[9px] font-black uppercase mb-2 block">নোটিশ আপডেট</label>
+                            <textarea id="noticeInput" class="w-full p-3 border rounded-xl text-xs h-24 font-bold mb-3">${config.notice}</textarea>
+                            <button onclick="config.notice = document.getElementById('noticeInput').value; saveConfig();" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-[9px] font-black">SAVE NOTICE</button>
+                        </div>
+                    </div>
+                `;
             }
             lucide.createIcons();
         }
 
         function saveConfig() { 
             if(window.syncToFirebase) window.syncToFirebase('config', config);
-            alert('সেটিং আপডেট হয়েছে!'); 
+            alert('সেটিং সফলভাবে আপডেট হয়েছে!'); 
             renderHome(); 
-        }
-        
-        function saveAdvancedSettings() {
-            config.notice = document.getElementById('noticeInput').value;
-            saveConfig();
         }
 
         function searchDB() {
             const query = document.getElementById('dbSearch').value.toLowerCase();
-            const cat = document.getElementById('catFilter').value;
             document.querySelectorAll('#dbBody tr').forEach(row => {
-                const text = row.innerText.toLowerCase().includes(query);
-                const planMatch = cat === "" || row.dataset.plan === cat;
-                row.style.display = text && planMatch ? '' : 'none';
+                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
             });
         }
 
@@ -703,41 +524,44 @@
             const m = db.find(x => x.id === id);
             const modal = document.createElement('div');
             modal.id = "fullModal";
-            modal.className = "fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-6";
+            modal.className = "fixed inset-0 z-[200] bg-slate-900/95 flex items-center justify-center p-4";
             modal.innerHTML = `
-                <div class="bg-white max-w-2xl w-full rounded-[4rem] overflow-hidden relative shadow-2xl p-10">
-                    <button onclick="document.getElementById('fullModal').remove()" class="absolute top-8 right-8 text-slate-300 hover:text-red-500"><i data-lucide="x"></i></button>
-                    <div class="flex items-center gap-8 mb-10 border-b pb-10">
-                        <img src="${m.photo}" class="w-32 h-32 rounded-[2.5rem] object-cover shadow-2xl">
-                        <div><h3 class="text-3xl font-black">${m.name}</h3><p class="text-sm font-black text-orange-500 uppercase mt-1">${m.plan} | ${m.id}</p></div>
+                <div class="bg-white max-w-sm w-full rounded-3xl p-6 relative">
+                    <button onclick="document.getElementById('fullModal').remove()" class="absolute top-4 right-4 text-slate-300"><i data-lucide="x"></i></button>
+                    <div class="text-center mb-6">
+                        <img src="${m.photo}" class="w-24 h-24 rounded-2xl mx-auto mb-4 object-cover shadow-lg">
+                        <h3 class="text-xl font-black">${m.name}</h3>
+                        <p class="text-[10px] font-black text-orange-500 uppercase">${m.plan} | ${m.id}</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-5 mb-10 text-sm font-bold">
-                        <div class="p-5 bg-slate-50 rounded-2xl"><p class="text-[10px] text-slate-300 uppercase mb-1">মোবাইল</p>${m.mob}</div>
-                        <div class="p-5 bg-slate-50 rounded-2xl"><p class="text-[10px] text-slate-300 uppercase mb-1">পেমেন্ট ট্র্যাকিং</p>${m.trx || m.receiver}</div>
+                    <div class="space-y-2 mb-6 text-xs font-bold">
+                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span>পিতার নাম:</span> <span>${m.father}</span></div>
+                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span>মোবাইল:</span> <span>${m.mob}</span></div>
+                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span>রক্তের গ্রুপ:</span> <span class="text-red-500">${m.blood}</span></div>
+                        <div class="p-3 bg-slate-50 rounded-xl flex justify-between"><span>ট্রানজেকশন:</span> <span>${m.trx || m.receiver}</span></div>
                     </div>
-                    <div class="flex gap-4">
-                        <button onclick="actionMember('${m.id}', 'Approve')" class="flex-1 bg-emerald-500 text-white py-5 rounded-2xl font-black text-[11px] uppercase shadow-lg">APPROVE NOW</button>
-                        <button onclick="renderMemberCard(db.find(x=>x.id==='${m.id}')); showPage('member-view'); document.getElementById('fullModal').remove();" class="flex-1 bg-slate-900 text-white py-5 rounded-2xl font-black text-[11px] uppercase shadow-lg">VIEW CARD</button>
-                        ${currentRole === 'admin' ? `<button onclick="actionMember('${m.id}', 'Delete')" class="bg-red-50 text-red-500 px-8 rounded-2xl hover:bg-red-500 hover:text-white transition"><i data-lucide="trash-2"></i></button>` : ''}
+                    <div class="flex gap-2">
+                        <button onclick="actionMember('${m.id}', 'Approve')" class="flex-1 bg-emerald-500 text-white py-4 rounded-xl font-black text-[9px] uppercase">Approve</button>
+                        <button onclick="actionMember('${m.id}', 'Delete')" class="bg-red-50 text-red-500 p-4 rounded-xl"><i data-lucide="trash-2" size="18"></i></button>
                     </div>
                 </div>
-            `; document.body.appendChild(modal); lucide.createIcons();
+            `;
+            document.body.appendChild(modal);
+            lucide.createIcons();
         }
 
         function actionMember(id, act) {
             if(act === 'Approve') { 
                 if(window.updateMemberStatus) window.updateMemberStatus(id, 'Approved');
-                alert('মেম্বার অনুমোদিত হয়েছে!'); 
+                alert('মেম্বার অনুমোদিত!'); 
             }
-            else if(act === 'Delete' && confirm('আপনি কি নিশ্চিত যে এই মেম্বারটি মুছে ফেলতে চান?')) { 
+            else if(act === 'Delete' && confirm('মুছে ফেলতে চান?')) { 
                 if(window.deleteMemberFromFirebase) window.deleteMemberFromFirebase(id);
             }
             if(document.getElementById('fullModal')) document.getElementById('fullModal').remove();
             setTab('db');
         }
 
-        // Initialize UI
-        renderHome();
+        window.onload = renderHome;
     </script>
 </body>
 </html>

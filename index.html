@@ -3,542 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youth Community Baraigram | Executive Edition 2026</title>
+    <title>YCB HUB | ইয়ুথ কমিউনিটি বড়াইগ্রাম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Outfit:wght@400;700;900&display=swap');
+        
+        :root { --primary: #f97316; --dark: #0f172a; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #f8fafc; color: #1e293b; overflow-x: hidden; }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
         .hidden-view { display: none !important; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
         
-        /* Premium ID Card Styling */
-        .id-card-container { width: 340px; height: 540px; perspective: 2000px; margin: 20px auto; }
-        .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
-        .flipped .id-card-inner { transform: rotateY(180deg); }
-        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 30px; overflow: hidden; background: white; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05); }
+        .premium-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .glass-morphism { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* Marquee Speed Reduced to 60s */
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .tv-marquee { display: inline-block; white-space: nowrap; animation: marquee 80s linear infinite; }
+        
+        /* ID Card Layout */
+        .id-card-wrapper { width: 320px; height: 500px; perspective: 1000px; margin: 0 auto; position: relative; }
+        .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
+        .id-card-inner.is-flipped { transform: rotateY(180deg); }
+        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); background: white; }
         .id-back { transform: rotateY(180deg); }
-
-        /* Form Inputs */
-        .form-input { width: 100%; padding: 14px 20px; background: #f1f5f9; border: 2px solid transparent; border-radius: 16px; font-weight: 600; outline: none; transition: 0.3s; }
-        .form-input:focus { border-color: #f97316; background: white; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); }
         
-        .watermark { position: absolute; bottom: 10px; right: 20px; font-size: 8px; font-weight: 900; color: rgba(0,0,0,0.1); pointer-events: none; text-transform: uppercase; letter-spacing: 2px; z-index: 50; }
-        
+        .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(249, 115, 22, 0.4); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .marquee-box { background: #0f172a; color: #fb923c; padding: 8px 0; font-weight: 700; font-size: 12px; }
 
-        @media print { 
-            .no-print { display: none !important; } 
-            body { background: white; }
-            .print-area { display: block !important; margin: 0 auto; box-shadow: none !important; } 
-        }
-
-        /* Animations */
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-slide { animation: slideUp 0.5s ease forwards; }
+        @media print { .no-print { display: none !important; } .print-only { display: block !important; } body { background: white; } }
     </style>
 </head>
 <body>
 
-    <header class="glass sticky top-0 z-[60] px-6 py-4 no-print">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center text-orange-500 shadow-lg border-b-4 border-orange-600 font-black italic text-lg">YCB</div>
-                <div>
-                    <h1 class="text-md font-black leading-none text-slate-800 uppercase italic">Youth Community</h1>
-                    <p class="text-[8px] font-bold text-orange-600 tracking-[2px] uppercase">Baraigram, Natore</p>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="showPage('member-login')" class="p-3 bg-white border rounded-xl text-slate-500 active:scale-90 transition-transform"><i data-lucide="user" size="18"></i></button>
-                <button onclick="openSystemAuth('admin')" class="p-3 bg-slate-900 rounded-xl text-orange-500 active:scale-90 transition-transform"><i data-lucide="shield-check" size="18"></i></button>
-            </div>
-        </div>
-    </header>
-
-    <div class="marquee-box no-print">
-        <marquee>ইউথ কমিউনিটি বড়াইগ্রাম: স্মার্ট বড়াইগ্রাম বিনির্মাণে তারুণ্যের ঐক্য। আপনার মেম্বারশিপ নিশ্চিত করুন।</marquee>
+    <div class="bg-orange-500 text-white py-2 overflow-hidden no-print border-b border-orange-600">
+        <div class="tv-marquee" id="marqueeBox"></div>
     </div>
 
-    <main class="max-w-md mx-auto pb-24">
-        
-        <section id="home" class="p-6 no-print animate-slide">
-            <div class="relative overflow-hidden bg-slate-900 rounded-[2.5rem] p-8 text-white mb-8 shadow-xl">
+    <nav class="sticky top-0 z-[100] glass-morphism px-5 py-4 flex justify-between items-center no-print shadow-sm">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
+            <div class="w-10 h-10 premium-gradient rounded-xl flex items-center justify-center text-white shadow-lg"><i data-lucide="zap" fill="currentColor"></i></div>
+            <div>
+                <h1 class="font-outfit text-xl font-black leading-none tracking-tighter">YCB <span class="text-orange-500 text-lg">HUB</span></h1>
+                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Baraigram Community</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="showPage('member-login')" class="p-2.5 bg-slate-100 text-slate-600 rounded-xl btn-hover"><i data-lucide="user" size="20"></i></button>
+            <button onclick="openSystemAuth()" class="p-2.5 bg-orange-50 text-orange-600 rounded-xl btn-hover"><i data-lucide="shield-check" size="20"></i></button>
+        </div>
+    </nav>
+
+    <main class="min-h-screen">
+        <section id="home" class="no-print">
+            <div class="premium-gradient text-white px-6 pt-16 pb-28 text-center relative overflow-hidden">
                 <div class="relative z-10">
-                    <h2 class="text-3xl font-black italic leading-tight">স্বপ্ন দেখি <br><span class="text-orange-500 uppercase">স্মার্ট বড়াইগ্রামের</span></h2>
-                    <p class="text-[10px] text-slate-400 mt-3 font-medium italic">একটি মেধাভিত্তিক ও মাদকমুক্ত সমাজ গড়াই আমাদের লক্ষ্য।</p>
-                    <div class="flex gap-3 mt-6">
-                        <button onclick="window.scrollTo({top: 500, behavior: 'smooth'})" class="bg-orange-500 px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">Apply Now</button>
-                        <button onclick="showPage('member-login')" class="bg-white/10 px-5 py-2.5 rounded-full text-[9px] font-black uppercase border border-white/20">Portal</button>
-                    </div>
-                </div>
-                <i data-lucide="rocket" class="absolute -right-4 -bottom-4 text-white/5 w-32 h-32 -rotate-12"></i>
-            </div>
-
-            <div id="noticeBoard" class="mb-8"></div>
-
-            <h3 class="text-center text-[9px] font-black uppercase tracking-[4px] text-slate-400 mb-6 italic">Select Membership Plan</h3>
-            <div id="planGrid" class="grid grid-cols-1 gap-4"></div>
-
-            <div class="mt-12 space-y-4">
-                <div class="bg-white p-6 rounded-3xl border shadow-sm border-l-4 border-l-orange-500">
-                    <div class="flex items-center gap-3 mb-2">
-                        <i data-lucide="target" class="text-orange-500" size="20"></i>
-                        <h4 class="font-black italic text-slate-800 uppercase text-sm">Mission</h4>
-                    </div>
-                    <p class="text-[11px] font-semibold text-slate-500 leading-relaxed">বড়াইগ্রামের প্রতিটি তরুণকে দক্ষ জনশক্তিতে রূপান্তর করা এবং সামাজিক উন্নয়নে সক্রিয় রাখা।</p>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border shadow-sm border-l-4 border-l-blue-500">
-                    <div class="flex items-center gap-3 mb-2">
-                        <i data-lucide="eye" class="text-blue-500" size="20"></i>
-                        <h4 class="font-black italic text-slate-800 uppercase text-sm">Vision</h4>
-                    </div>
-                    <p class="text-[11px] font-semibold text-slate-500 leading-relaxed">২০৩০ সালের মধ্যে বড়াইগ্রামকে একটি সম্পূর্ণ স্মার্ট এবং ডিজিটাল মডেল উপজেলা হিসেবে গড়ে তোলা।</p>
-                </div>
-                <div class="bg-slate-900 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
-                    <div class="flex items-center gap-3 mb-3 relative z-10">
-                        <i data-lucide="gift" class="text-orange-500" size="20"></i>
-                        <h4 class="font-black italic uppercase text-sm">Member Benefits</h4>
-                    </div>
-                    <ul class="text-[10px] space-y-2 text-slate-300 font-medium relative z-10">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" size="12" class="text-emerald-500"></i> ডিজিটাল আইডি কার্ড এবং আজীবন সদস্যপদ।</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" size="12" class="text-emerald-500"></i> সরকারি-বেসরকারি চাকরির তথ্য ও গাইডলাইন।</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle" size="12" class="text-emerald-500"></i> ফ্রিল্যান্সিং এবং স্কিল ডেভেলপমেন্ট ট্রেনিং সুবিধা।</li>
-                    </ul>
-                    <div class="watermark" style="color:rgba(255,255,255,0.05)">Rafi Digital Solution</div>
-                </div>
-            </div>
-
-            <footer class="mt-16 text-center pb-10">
-                <div class="flex flex-col items-center gap-2">
-                    <span class="text-[8px] font-bold text-slate-300 uppercase tracking-widest italic">Core Technology Partner</span>
-                    <div class="bg-white px-4 py-2 rounded-xl shadow-sm border flex items-center gap-2">
-                        <div class="w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping"></div>
-                        <span class="text-[9px] font-black text-slate-700 uppercase italic">Rafi Digital Solution</span>
-                    </div>
-                </div>
-                <p class="text-[9px] font-bold text-slate-400 mt-6">© 2026 YCB. All Rights Reserved.</p>
-            </footer>
-        </section>
-
-        <section id="admin-dashboard" class="hidden-view no-print animate-slide">
-            <div class="bg-slate-900 p-8 text-white rounded-b-[3rem] shadow-2xl">
-                <div class="flex justify-between items-center mb-8">
-                    <div>
-                        <h2 class="text-2xl font-black italic uppercase">Admin Hub</h2>
-                        <p class="text-[9px] text-orange-500 font-bold uppercase tracking-[3px]">System Control Panel</p>
-                    </div>
-                    <button onclick="location.reload()" class="w-11 h-11 bg-red-500/20 text-red-500 rounded-2xl flex items-center justify-center border border-red-500/20"><i data-lucide="power" size="20"></i></button>
-                </div>
-                
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center">
-                        <p class="text-[7px] font-bold text-slate-400 uppercase mb-1">Total</p>
-                        <h4 id="statTotal" class="text-lg font-black italic">0</h4>
-                    </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center">
-                        <p class="text-[7px] font-bold text-slate-400 uppercase mb-1">Income</p>
-                        <h4 id="statMoney" class="text-lg font-black italic text-emerald-400">0</h4>
-                    </div>
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center">
-                        <p class="text-[7px] font-bold text-slate-400 uppercase mb-1">Pending</p>
-                        <h4 id="statPending" class="text-lg font-black italic text-orange-500">0</h4>
-                    </div>
+                    <span class="bg-orange-500/10 text-orange-400 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-orange-500/20">অপরাজেয় তারুণ্য</span>
+                    <h2 class="text-4xl md:text-6xl font-black mt-6 leading-tight tracking-tighter italic">ইয়ুথ কমিউনিটি <br><span class="text-orange-500">বড়াইগ্রাম</span></h2>
+                    <p class="mt-4 text-slate-400 text-sm font-medium">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি</p>
                 </div>
             </div>
             
-            <div class="flex gap-2 p-6 overflow-x-auto no-scrollbar">
-                <button onclick="setTab('db')" class="bg-white border rounded-xl px-6 py-3 text-[10px] font-black uppercase italic shadow-sm flex-shrink-0">Database</button>
-                <button onclick="setTab('pending')" class="bg-white border rounded-xl px-6 py-3 text-[10px] font-black uppercase italic shadow-sm flex-shrink-0">Verification</button>
-                <button onclick="setTab('config')" class="bg-white border rounded-xl px-6 py-3 text-[10px] font-black uppercase italic shadow-sm flex-shrink-0">Settings</button>
-                <button onclick="setTab('print')" class="bg-white border rounded-xl px-6 py-3 text-[10px] font-black uppercase italic shadow-sm flex-shrink-0">Printer</button>
+            <div class="px-5 -mt-16 grid grid-cols-1 gap-4 mb-12" id="planGrid"></div>
+
+            <div class="px-6 space-y-12 pb-20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100">
+                        <i data-lucide="target" class="text-orange-500 mb-4" size="32"></i>
+                        <h4 class="text-xl font-black mb-3">আমাদের লক্ষ্য</h4>
+                        <p class="text-sm text-slate-500 font-medium">বড়াইগ্রামের প্রতিটি শিক্ষিত ও উদ্যমী তরুণকে একটি প্ল্যাটফর্মে নিয়ে আসা এবং তাদের মেধা দিয়ে উপজেলার ডিজিটাল ও সামাজিক উন্নয়ন নিশ্চিত করা।</p>
+                    </div>
+                    <div class="p-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100">
+                        <i data-lucide="eye" class="text-orange-500 mb-4" size="32"></i>
+                        <h4 class="text-xl font-black mb-3">আমাদের ভিশন</h4>
+                        <p class="text-sm text-slate-500 font-medium">একটি স্মার্ট বড়াইগ্রাম গড়ে তোলা যেখানে প্রযুক্তি আর তারুণ্য হবে উন্নয়নের প্রধান হাতিয়ার।</p>
+                    </div>
+                </div>
+
+                <div class="p-10 bg-orange-50 rounded-[3rem] border border-orange-100">
+                    <h3 class="text-2xl font-black mb-8 text-center">মেম্বারশিপের সুবিধাসমূহ</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">ডিজিটাল মেম্বারশিপ আইডি কার্ড</p></div>
+                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">সংগঠনের সকল ইভেন্টে সরাসরি অংশগ্রহণ</p></div>
+                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">দক্ষতা উন্নয়নে ফ্রি ট্রেনিং সুবিধা</p></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-black mb-8 text-center">সাধারণ জিজ্ঞাসা (FAQ)</h3>
+                    <div class="space-y-4 max-w-2xl mx-auto">
+                        <details class="bg-white p-5 rounded-2xl border cursor-pointer shadow-sm group">
+                            <summary class="font-bold text-sm list-none flex justify-between items-center">আবেদন কীভাবে করব? <i data-lucide="chevron-down" size="16"></i></summary>
+                            <p class="text-xs text-slate-500 mt-3 font-medium">যেকোনো একটি মেম্বারশিপ প্ল্যান সিলেক্ট করে ফর্মটি পূরণ করুন এবং পেমেন্ট সম্পন্ন করলেই আপনার আবেদন জমা হবে।</p>
+                        </details>
+                        <details class="bg-white p-5 rounded-2xl border cursor-pointer shadow-sm group">
+                            <summary class="font-bold text-sm list-none flex justify-between items-center">আইডি কার্ড কখন পাব? <i data-lucide="chevron-down" size="16"></i></summary>
+                            <p class="text-xs text-slate-500 mt-3 font-medium">আবেদন করার পর এডমিন প্যানেল থেকে তথ্য যাচাই করে এপ্রুভ করলেই আপনি লগইন করে আইডি কার্ড ডাউনলোড করতে পারবেন।</p>
+                        </details>
+                    </div>
+                </div>
             </div>
-            
-            <div id="adminTabContent" class="px-6 space-y-4 pb-10"></div>
         </section>
 
-        <section id="application-form" class="hidden-view p-6 no-print animate-slide">
-            <div id="formContainer"></div>
+        <section id="application-form" class="hidden-view px-5 py-10 no-print">
+            <div class="max-w-xl mx-auto bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-50 relative">
+                <button onclick="showPage('home')" class="absolute top-6 right-6 p-2 bg-slate-100 rounded-full text-slate-400 hover:text-red-500 z-50"><i data-lucide="x" size="20"></i></button>
+                <div id="formContent"></div>
+            </div>
         </section>
 
-        <section id="member-view" class="hidden-view p-6 text-center animate-slide">
-            <div id="memberContent"></div>
+        <section id="receipt-view" class="hidden-view px-5 py-12">
+            <div id="receiptContent"></div>
         </section>
 
+        <section id="member-login" class="hidden-view px-6 pt-32 no-print">
+            <div class="max-w-sm mx-auto bg-white p-10 rounded-[3rem] shadow-2xl text-center relative">
+                <button onclick="showPage('home')" class="absolute top-6 right-6 text-slate-300"><i data-lucide="x"></i></button>
+                <div class="w-20 h-20 bg-orange-50 text-orange-500 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-inner"><i data-lucide="fingerprint" size="40"></i></div>
+                <h3 class="text-2xl font-black mb-8">মেম্বার লগইন</h3>
+                <div class="space-y-4">
+                    <input id="loginMob" type="tel" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-sm border focus:border-orange-500 transition">
+                    <input id="loginNid" type="number" placeholder="NID এর শেষ ৪ সংখ্যা" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-sm border focus:border-orange-500 transition">
+                </div>
+                <button onclick="authMember()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black mt-8 shadow-xl text-xs tracking-widest uppercase">প্রবেশ করুন</button>
+            </div>
+        </section>
+
+        <section id="system-auth" class="hidden-view px-6 pt-32 no-print">
+            <div class="max-w-sm mx-auto bg-slate-900 p-10 rounded-[3rem] text-center text-white shadow-2xl relative">
+                <button onclick="showPage('home')" class="absolute top-6 right-6 text-slate-600"><i data-lucide="x"></i></button>
+                <div class="w-16 h-16 bg-orange-500 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg"><i data-lucide="lock" size="28"></i></div>
+                <h3 class="text-xl font-black mb-2 font-outfit uppercase">Admin Access</h3>
+                <input id="adminKey" type="password" placeholder="••••" class="w-full p-4 bg-white/5 border-none rounded-2xl mb-6 text-center text-3xl tracking-[15px] text-orange-500 outline-none">
+                <button onclick="handleAdminAuth()" class="w-full bg-orange-500 py-4 rounded-xl font-black text-xs uppercase tracking-widest">Dashboard Unlock</button>
+            </div>
+        </section>
+
+        <section id="admin-dashboard" class="hidden-view px-4 py-8 no-print">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center justify-between mb-8 bg-slate-900 p-6 rounded-[2rem] text-white">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20"><i data-lucide="layout-grid"></i></div>
+                        <div><h4 class="font-outfit text-lg font-black uppercase italic">Control <span class="text-orange-500">Center</span></h4><p class="text-[8px] font-black opacity-40">VER 7.0</p></div>
+                    </div>
+                    <button onclick="location.reload()" class="p-3 bg-red-500/20 text-red-400 rounded-xl"><i data-lucide="power" size="20"></i></button>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6" id="adminTabs">
+                    <button onclick="renderTab('db')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">ডাটাবেজ</button>
+                    <button onclick="renderTab('approve')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">পেন্ডিং</button>
+                    <button onclick="renderTab('finance')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">হিসাব</button>
+                    <button onclick="renderTab('settings')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">সেটিংস</button>
+                </div>
+                <div id="adminTabDisplay" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm min-h-[500px]"></div>
+            </div>
+        </section>
+
+        <section id="member-profile" class="hidden-view px-5 py-10">
+            <div id="profileContent"></div>
+        </section>
     </main>
 
-    <div id="globalModal" class="hidden-view fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-6 no-print">
-        <div class="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl p-8 relative overflow-y-auto max-h-[85vh]">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors"><i data-lucide="x-circle" size="28"></i></button>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
-    <section id="system-login" class="hidden-view fixed inset-0 z-[100] bg-white flex items-center justify-center p-8 no-print">
-        <div class="w-full max-w-xs text-center">
-            <button onclick="showPage('home')" class="absolute top-8 left-8 p-3 bg-slate-50 rounded-full"><i data-lucide="arrow-left" size="20"></i></button>
-            <div class="w-20 h-20 bg-slate-900 rounded-[1.8rem] mx-auto mb-8 flex items-center justify-center text-orange-500 shadow-xl border-b-4 border-orange-600"><i data-lucide="lock" size="30"></i></div>
-            <h3 class="text-2xl font-black text-slate-900 mb-1 italic uppercase tracking-tighter">Authorized Access</h3>
-            <p class="text-[9px] font-bold text-slate-300 uppercase tracking-[4px] mb-10">Security Clearance Required</p>
-            <input id="sysPass" type="password" placeholder="••••" class="w-full bg-slate-50 border-2 p-5 rounded-2xl text-center text-3xl tracking-[10px] outline-none focus:border-orange-500 mb-6 font-black">
-            <button onclick="handleSystemAuth()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-lg uppercase italic text-sm">Unlock System</button>
-        </div>
-    </section>
-
-    <section id="member-login" class="hidden-view fixed inset-0 z-[100] bg-white flex items-center justify-center p-8 no-print">
-        <div class="w-full max-w-xs text-center">
-            <button onclick="showPage('home')" class="absolute top-8 left-8 p-3 bg-slate-50 rounded-full"><i data-lucide="arrow-left" size="20"></i></button>
-            <div class="w-20 h-20 bg-orange-50 text-orange-500 rounded-[1.8rem] mx-auto mb-8 flex items-center justify-center border shadow-sm"><i data-lucide="user-check" size="30"></i></div>
-            <h3 class="text-2xl font-black text-slate-900 mb-1 italic uppercase tracking-tighter">Member Portal</h3>
-            <p class="text-slate-400 text-[9px] font-black uppercase tracking-[2px] mb-10">Get Your Digital ID Card</p>
-            <div class="space-y-3">
-                <input id="memMob" type="tel" placeholder="আপনার মোবাইল নম্বর" class="form-input text-center">
-                <input id="memNid" type="number" placeholder="NID শেষ ৪ সংখ্যা" class="form-input text-center">
+    <footer class="bg-slate-100 pt-20 pb-10 no-print relative overflow-hidden border-t border-slate-200">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-slate-200">
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center text-white"><i data-lucide="zap" fill="currentColor"></i></div>
+                        <div>
+                            <h2 class="font-outfit text-3xl font-black text-slate-900 tracking-tighter">YCB <span class="text-orange-500">HUB</span></h2>
+                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-[4px]">Baraigram, Natore</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium leading-relaxed max-w-sm">আমরা বড়াইগ্রামের তারুণ্যকে একত্রিত করে একটি সুন্দর সমাজ গড়ার লক্ষ্যে কাজ করছি।</p>
+                </div>
+                <div class="space-y-6">
+                    <h4 class="text-slate-900 font-black text-xs uppercase tracking-widest">ঠিকানা</h4>
+                    <div class="space-y-3">
+                        <p class="flex items-center gap-3 text-slate-500 text-xs font-bold"><i data-lucide="map-pin" class="text-orange-500" size="16"></i> হাসপাতাল রোড, বড়াইগ্রাম</p>
+                        <p class="flex items-center gap-3 text-slate-500 text-xs font-bold"><i data-lucide="phone" class="text-orange-500" size="16"></i> +8801768579957</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/8801763752653" target="_blank" class="block bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm text-center hover:bg-orange-50 transition">
+                    <p class="text-[8px] font-black uppercase tracking-widest mb-3 text-slate-400">Powered By</p>
+                    <h5 class="text-lg font-black italic font-outfit text-slate-900">RAFI DIGITAL SOLUTION</h5>
+                    <p class="text-[9px] font-bold mt-3 text-orange-500 italic">Click to connect on WhatsApp</p>
+                </a>
             </div>
-            <button onclick="authMember()" class="w-full bg-orange-500 text-white py-5 rounded-2xl font-black shadow-lg uppercase mt-6 italic text-sm">Download Card</button>
+            <div class="text-center pt-8"><p class="text-[8px] font-black text-slate-400 uppercase tracking-[6px]">© 2026 YOUTH COMMUNITY BARAIGRAM</p></div>
         </div>
-    </section>
+    </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCDTAotZxUVqL9hL9_rt0oub-K9S9j60Wc",
-            authDomain: "youth-community-baraigram.firebaseapp.com",
-            databaseURL: "https://youth-community-baraigram-default-rtdb.firebaseio.com",
-            projectId: "youth-community-baraigram",
-            storageBucket: "youth-community-baraigram.firebasestorage.app",
-            messagingSenderId: "465895578974",
-            appId: "1:465895578974:web:c3bd8ceffe55ce7c6b83cf"
-        };
-
+        const firebaseConfig = { databaseURL: "https://youth-community-baraigram-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
         const rdb = getDatabase(app);
 
+        window.cfg = { adminPass: 'rafi2026', payNum: '01763752653', notice: 'বড়াইগ্রামের তারুণ্যের অগ্রযাত্রা শুরু হলো!', autoApprove: false, prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 } };
         window.plans = [
-            {id:'Star', n:'স্টার', g:'from-orange-400 to-orange-600', c:'#ea580c', i:'star', p:300},
-            {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield', p:500},
-            {id:'Gold', n:'গোল্ড', g:'from-amber-400 to-yellow-600', c:'#d97706', i:'award', p:1000},
-            {id:'Platinum', n:'প্লাটিনাম', g:'from-blue-500 to-indigo-600', c:'#4f46e5', i:'zap', p:2000},
-            {id:'Diamond', n:'ডায়মন্ড', g:'from-rose-500 to-pink-600', c:'#e11d48', i:'crown', p:5000}
+            {id:'Star', n:'স্টার', g:'from-orange-500 to-amber-500', c:'#f97316', i:'star'},
+            {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield'},
+            {id:'Gold', n:'গোল্ড', g:'from-amber-400 to-yellow-600', c:'#d97706', i:'award'},
+            {id:'Platinum', n:'প্লাটিনাম', g:'from-indigo-600 to-purple-700', c:'#4f46e5', i:'zap'},
+            {id:'Diamond', n:'ডায়মন্ড', g:'from-rose-500 to-pink-600', c:'#e11d48', i:'crown'}
         ];
 
         window.db = [];
-        window.config = { adminPass: 'rafi2026', payNum: '01763752653', notice: 'বড়াইগ্রামের তারুণ্যের গর্ব "ইউথ কমিউনিটি বড়াইগ্রাম" এ যোগ দিন।' };
-
-        // Realtime Data Sync
-        onValue(ref(rdb, 'members'), (s) => {
-            window.db = s.val() ? Object.values(s.val()) : [];
-            updateStats();
+        onValue(ref(rdb, 'members'), (snap) => {
+            window.db = snap.val() ? Object.values(snap.val()) : [];
             renderHome();
         });
 
-        onValue(ref(rdb, 'config'), (s) => {
-            if(s.exists()) window.config = s.val();
-            renderHome();
-        });
-
-        // Firebase Functions
-        window.saveMember = (data) => set(ref(rdb, 'members/' + data.id), data);
-        window.updateMember = (id, obj) => update(ref(rdb, 'members/' + id), obj);
+        window.saveMember = (m) => set(ref(rdb, 'members/' + m.id), m);
+        window.updateMember = (id, data) => update(ref(rdb, 'members/' + id), data);
         window.deleteMember = (id) => remove(ref(rdb, 'members/' + id));
-        window.saveConfig = (obj) => set(ref(rdb, 'config'), obj);
-
-        function updateStats() {
-            if(!document.getElementById('statTotal')) return;
-            document.getElementById('statTotal').innerText = db.length;
-            document.getElementById('statPending').innerText = db.filter(x => x.status === 'Pending').length;
-            const totalIncome = db.filter(x => x.status === 'Approved').reduce((acc, curr) => {
-                const p = plans.find(pl => pl.id === curr.plan);
-                return acc + (p ? p.p : 0);
-            }, 0);
-            document.getElementById('statMoney').innerText = '৳' + totalIncome;
-        }
+        
+        onValue(ref(rdb, 'config'), (snap) => {
+            if(snap.val()) window.cfg = {...window.cfg, ...snap.val()};
+            renderHome();
+        });
+        window.saveConfig = (c) => update(ref(rdb, 'config'), c);
     </script>
 
     <script>
-        let selectedImg = "";
-        let currentRole = "";
+        let currentAppPhoto = "";
+        const signUrl = "https://i.ibb.co.com/kVCt3f9m/PLPL-Osman20260411-123334.png";
 
         function showPage(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden-view'));
-            document.getElementById(id).classList.remove('hidden-view');
-            lucide.createIcons();
-            window.scrollTo({top:0, behavior: 'smooth'});
+            const target = document.getElementById(id);
+            if(target) target.classList.remove('hidden-view');
+            lucide.createIcons(); window.scrollTo(0,0);
         }
 
         function renderHome() {
-            const grid = document.getElementById('planGrid');
-            if(!grid) return;
-            grid.innerHTML = plans.map(p => `
-                <div onclick="initForm('${p.id}')" class="bg-white rounded-3xl border border-slate-100 p-5 flex items-center justify-between shadow-sm active:scale-95 transition-all cursor-pointer">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${p.g} flex items-center justify-center text-white shadow-lg"><i data-lucide="${p.i}"></i></div>
-                        <div>
-                            <h4 class="font-black text-slate-800 italic uppercase text-sm">${p.n} মেম্বারশিপ</h4>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">ফি: ৳${p.p}</p>
-                        </div>
-                    </div>
-                    <i data-lucide="arrow-right" class="text-slate-200" size="18"></i>
+            document.getElementById('planGrid').innerHTML = plans.map(p => `
+                <div onclick="openApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-6 rounded-[2rem] text-white cursor-pointer relative overflow-hidden btn-hover shadow-xl">
+                    <i data-lucide="${p.i}" class="absolute -right-6 -bottom-6 opacity-20" size="120"></i>
+                    <p class="text-[9px] font-black uppercase opacity-60 tracking-widest">Membership Plan</p>
+                    <h4 class="text-3xl font-black mt-1">${p.n} Member</h4>
+                    <p class="text-xs font-bold mt-4 bg-white/20 px-3 py-1.5 rounded-full w-fit">৳${cfg.prices[p.id]}</p>
                 </div>
             `).join('');
+            document.getElementById('marqueeBox').innerHTML = `<span class="mx-20 text-[10px] font-black uppercase tracking-[3px]">${cfg.notice}</span>`.repeat(5);
+            lucide.createIcons();
+        }
 
-            const noticeBox = document.getElementById('noticeBoard');
-            if(noticeBox) {
-                noticeBox.innerHTML = `
-                    <div class="bg-orange-50 border border-orange-100 p-4 rounded-2xl flex gap-3 items-start">
-                        <i data-lucide="megaphone" class="text-orange-500 flex-shrink-0" size="18"></i>
-                        <p class="text-[11px] font-bold text-orange-900 leading-tight">${config.notice}</p>
+        function handleFile(e) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                currentAppPhoto = reader.result;
+                document.getElementById('photoPrev').innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        function openApplication(pid, editData = null) {
+            const p = plans.find(x => x.id === pid);
+            currentAppPhoto = editData ? editData.photo : "";
+            document.getElementById('formContent').innerHTML = `
+                <div class="h-28 flex items-center justify-center text-white relative" style="background:${p.c}">
+                    <h3 class="text-xl font-black uppercase italic">${editData ? 'তথ্য পরিবর্তন' : p.n + ' Membership'}</h3>
+                </div>
+                <div class="p-8 md:p-12 space-y-6">
+                    <div id="photoPrev" onclick="document.getElementById('fileInp').click()" class="w-24 h-24 bg-slate-50 border-2 border-dashed border-orange-200 rounded-3xl mx-auto flex items-center justify-center cursor-pointer overflow-hidden shadow-inner">
+                        ${currentAppPhoto ? `<img src="${currentAppPhoto}" class="w-full h-full object-cover">` : '<i data-lucide="camera" class="text-slate-300"></i>'}
+                    </div>
+                    <input type="file" id="fileInp" class="hidden" accept="image/*" onchange="handleFile(event)">
+                    <div class="grid grid-cols-1 gap-4">
+                        <input id="fName" value="${editData ? editData.name : ''}" type="text" placeholder="মেম্বারের পুরো নাম" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input id="fPita" value="${editData ? (editData.pita || '') : ''}" type="text" placeholder="পিতার নাম" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                            <input id="fJob" value="${editData ? (editData.job || '') : ''}" type="text" placeholder="পেশা" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input id="fMob" value="${editData ? editData.mob : ''}" type="tel" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                            <input id="fNid" value="${editData ? editData.nid : ''}" type="number" placeholder="NID (শেষ ৪ সংখ্যা)" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input id="fVill" value="${editData ? editData.vill : ''}" type="text" placeholder="গ্রাম / এলাকা" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                            <select id="fBlood" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                                <option value="">রক্তের গ্রুপ</option>
+                                <option value="A+" ${editData && editData.blood === 'A+' ? 'selected' : ''}>A+</option>
+                                <option value="A-" ${editData && editData.blood === 'A-' ? 'selected' : ''}>A-</option>
+                                <option value="B+" ${editData && editData.blood === 'B+' ? 'selected' : ''}>B+</option>
+                                <option value="B-" ${editData && editData.blood === 'B-' ? 'selected' : ''}>B-</option>
+                                <option value="O+" ${editData && editData.blood === 'O+' ? 'selected' : ''}>O+</option>
+                                <option value="O-" ${editData && editData.blood === 'O-' ? 'selected' : ''}>O-</option>
+                                <option value="AB+" ${editData && editData.blood === 'AB+' ? 'selected' : ''}>AB+</option>
+                                <option value="AB-" ${editData && editData.blood === 'AB-' ? 'selected' : ''}>AB-</option>
+                            </select>
+                        </div>
+                    </div>
+                    ${!editData ? `
+                    <div class="p-6 bg-slate-900 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl">
+                        <div class="relative z-10">
+                            <p class="text-[8px] font-black uppercase text-orange-500 tracking-widest mb-3">Payment Gateway</p>
+                            <div class="flex justify-between items-center mb-6">
+                                <div><p class="text-[10px] opacity-40">Send Money</p><h4 class="text-xl font-black">${cfg.payNum}</h4></div>
+                                <button onclick="navigator.clipboard.writeText(cfg.payNum); alert('কপি হয়েছে');" class="p-3 bg-white/10 rounded-xl"><i data-lucide="copy" size="18"></i></button>
+                            </div>
+                            <div class="space-y-4">
+                                <input id="fTrx" type="text" placeholder="Transaction ID" class="w-full p-4 bg-white/10 border-none rounded-xl text-center font-black tracking-widest text-orange-400 outline-none">
+                            </div>
+                        </div>
+                    </div>` : ''}
+                    <button onclick="${editData ? `processEdit('${editData.id}')` : `submitApp('${pid}')`}" class="w-full py-5 bg-orange-500 text-white rounded-[2rem] font-black uppercase text-xs tracking-widest btn-hover shadow-xl">
+                        ${editData ? 'আপডেট নিশ্চিত করুন' : 'আবেদন সম্পন্ন করুন'}
+                    </button>
+                </div>
+            `;
+            showPage('application-form');
+        }
+
+        function submitApp(pid) {
+            const v = (id) => document.getElementById(id).value;
+            if(!v('fName') || !v('fMob') || !currentAppPhoto) return alert('সব তথ্য দিন!');
+            const member = {
+                id: 'YCB' + Math.floor(1000 + Math.random() * 9000),
+                name: v('fName'), pita: v('fPita'), mob: v('fMob'), nid: v('fNid'), vill: v('fVill'), job: v('fJob'), blood: v('fBlood'),
+                trx: v('fTrx') || '', plan: pid, photo: currentAppPhoto,
+                status: cfg.autoApprove ? 'Approved' : 'Pending', joined: new Date().toLocaleDateString('bn-BD')
+            };
+            window.saveMember(member);
+            renderReceipt(member);
+        }
+
+        function processEdit(id) {
+            const v = (id) => document.getElementById(id).value;
+            window.updateMember(id, {
+                name: v('fName'), pita: v('fPita'), mob: v('fMob'), nid: v('fNid'), vill: v('fVill'), job: v('fJob'), blood: v('fBlood'), photo: currentAppPhoto
+            });
+            alert('তথ্য আপডেট হয়েছে!');
+            showPage('admin-dashboard');
+        }
+
+        function renderReceipt(m) {
+            const p = plans.find(x => x.id === m.plan);
+            document.getElementById('receiptContent').innerHTML = `
+                <div class="max-w-lg mx-auto bg-white p-10 rounded-[3rem] shadow-2xl border relative overflow-hidden">
+                    <div class="text-center mb-10">
+                        <h2 class="font-outfit text-2xl font-black italic">YCB <span class="text-orange-500">RECEIPT</span></h2>
+                    </div>
+                    <div class="space-y-6 mb-10 text-xs">
+                        <div class="flex justify-between border-b pb-4"><span class="font-bold text-slate-400">ID</span><span class="font-black">#${m.id}</span></div>
+                        <div class="flex justify-between border-b pb-4"><span class="font-bold text-slate-400">Name</span><span class="font-black">${m.name}</span></div>
+                        <div class="flex justify-between border-b pb-4"><span class="font-bold text-slate-400">Category</span><span class="font-black text-orange-500">${p.n} Member</span></div>
+                        <div class="flex justify-between border-b pb-4"><span class="font-bold text-slate-400">Paid</span><span class="font-black">৳${cfg.prices[m.plan]}</span></div>
+                    </div>
+                    <div class="flex justify-between items-end mt-12">
+                        <div class="text-left"><p class="text-xs font-black">${m.joined}</p></div>
+                        <div class="text-center"><img src="${signUrl}" class="w-16 mx-auto"><p class="text-[8px] font-black uppercase border-t pt-1">Authority</p></div>
+                    </div>
+                </div>
+                <div class="flex gap-4 max-w-lg mx-auto mt-8 no-print">
+                    <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase shadow-xl">Print</button>
+                    <button onclick="showPage('home')" class="flex-1 py-4 bg-slate-100 text-slate-400 rounded-2xl font-black text-xs uppercase">Home</button>
+                </div>
+            `;
+            showPage('receipt-view');
+        }
+
+        function openSystemAuth() {
+            document.getElementById('adminKey').value = "";
+            showPage('system-auth');
+        }
+
+        function handleAdminAuth() {
+            if(document.getElementById('adminKey').value === cfg.adminPass) {
+                renderTab('db'); showPage('admin-dashboard');
+            } else alert('ভুল পাসওয়ার্ড!');
+        }
+
+        function renderTab(t) {
+            const disp = document.getElementById('adminTabDisplay');
+            if(t === 'db') {
+                disp.innerHTML = `
+                    <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black">ডাটাবেজ</h3><input id="dbSearch" onkeyup="searchDB()" placeholder="খুঁজুন..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>
+                    <div class="space-y-3" id="dbBody">${db.map(m => `
+                        <div onclick="showMemberOptions('${m.id}')" class="p-4 bg-slate-50 rounded-2xl flex items-center justify-between cursor-pointer border">
+                            <div class="flex items-center gap-3"><img src="${m.photo}" class="w-10 h-10 rounded-xl object-cover"><div><p class="text-xs font-black">${m.name}</p><p class="text-[8px] opacity-50">${m.id}</p></div></div>
+                            <span class="text-[8px] font-black uppercase px-2 py-1 rounded-md ${m.status==='Approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'}">${m.status}</span>
+                        </div>
+                    `).join('')}</div>
+                `;
+            } else if(t === 'approve') {
+                const pend = db.filter(x => x.status === 'Pending');
+                disp.innerHTML = `<h3 class="text-xl font-black mb-8">পেন্ডিং (${pend.length})</h3>
+                <div class="space-y-4">${pend.map(m => `
+                    <div class="p-5 bg-white border rounded-[2rem] flex items-center justify-between">
+                        <div class="flex items-center gap-4"><img src="${m.photo}" class="w-12 h-12 rounded-2xl object-cover"><div><p class="text-sm font-black">${m.name}</p><p class="text-[10px] text-orange-500">${m.trx}</p></div></div>
+                        <button onclick="window.updateMember('${m.id}', {status:'Approved'})" class="bg-orange-500 text-white px-5 py-3 rounded-xl font-black text-[9px] uppercase">Approve</button>
+                    </div>
+                `).join('')}</div>`;
+            } else if(t === 'finance') {
+                let total = 0;
+                let stats = {};
+                plans.forEach(p => stats[p.id] = {count: 0, sum: 0, name: p.n});
+                db.filter(u => u.status === 'Approved').forEach(u => {
+                    total += cfg.prices[u.plan];
+                    stats[u.plan].count++;
+                    stats[u.plan].sum += cfg.prices[u.plan];
+                });
+                disp.innerHTML = `
+                    <div class="p-10 premium-gradient text-white rounded-[2.5rem] text-center mb-6"><p class="text-[10px] opacity-40 uppercase">মোট ফান্ড</p><h2 class="text-5xl font-black mt-2">৳${total}</h2></div>
+                    <div class="grid grid-cols-2 gap-4">${Object.values(stats).map(s => `
+                        <div class="p-4 bg-slate-50 rounded-2xl border">
+                            <p class="text-[10px] font-black uppercase text-slate-400">${s.name}</p>
+                            <h4 class="text-lg font-black mt-1">৳${s.sum}</h4>
+                            <p class="text-[8px] font-bold text-orange-500 mt-1">${s.count} Members</p>
+                        </div>
+                    `).join('')}</div>
+                `;
+            } else if(t === 'settings') {
+                disp.innerHTML = `
+                    <h3 class="text-xl font-black mb-8">সেটিংস</h3>
+                    <div class="space-y-4">
+                        <label class="block"><span class="text-[10px] font-black uppercase px-2">পেমেন্ট নম্বর</span><input id="newPay" value="${cfg.payNum}" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm outline-none border mt-1"></label>
+                        <label class="block"><span class="text-[10px] font-black uppercase px-2">অ্যাডমিন পাসওয়ার্ড</span><input id="newPass" value="${cfg.adminPass}" type="text" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm outline-none border mt-1"></label>
+                        <label class="block"><span class="text-[10px] font-black uppercase px-2">নোটিশ</span><textarea id="newNotice" class="w-full p-4 bg-slate-50 rounded-xl font-bold text-sm outline-none border mt-1">${cfg.notice}</textarea></label>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border">
+                            <span class="text-xs font-black uppercase">Auto Approval</span>
+                            <input type="checkbox" id="autoApp" ${cfg.autoApprove ? 'checked' : ''} class="w-5 h-5 accent-orange-500">
+                        </div>
+                        <button onclick="saveGlobalSettings()" class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs mt-4">Save Settings</button>
                     </div>
                 `;
             }
             lucide.createIcons();
         }
 
-        function copyPayment() {
-            navigator.clipboard.writeText(config.payNum);
-            alert('পেমেন্ট নম্বর কপি হয়েছে!');
-        }
-
-        function initForm(pid) {
-            const p = plans.find(x => x.id === pid);
-            selectedImg = "";
-            document.getElementById('formContainer').innerHTML = `
-                <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border">
-                    <div class="p-8 text-white bg-gradient-to-br ${p.g} text-center relative overflow-hidden">
-                        <button onclick="showPage('home')" class="absolute top-6 left-6 text-white/50"><i data-lucide="chevron-left"></i></button>
-                        <h3 class="text-3xl font-black italic uppercase tracking-tighter">Registration</h3>
-                        <p class="text-[9px] font-bold opacity-80 uppercase tracking-[3px] mt-1">${p.n} Member Application</p>
-                    </div>
-                    <div class="p-8 space-y-5">
-                        <div id="photoBox" onclick="document.getElementById('fileInp').click()" class="w-32 h-32 bg-slate-50 border-2 border-dashed rounded-[2.5rem] mx-auto flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all group">
-                            <i data-lucide="camera" class="text-slate-300 group-hover:scale-110 transition-all"></i>
-                            <p class="text-[8px] font-black text-slate-400 mt-2 uppercase">আপনার ছবি</p>
-                        </div>
-                        <input type="file" id="fileInp" class="hidden" accept="image/*" onchange="handleImg(event)">
-                        
-                        <div class="space-y-3">
-                            <input id="fName" type="text" placeholder="পুরো নাম (সার্টিফিকেট অনুযায়ী)" class="form-input">
-                            <input id="fFName" type="text" placeholder="পিতার নাম" class="form-input">
-                            <input id="fMob" type="tel" placeholder="সক্রিয় মোবাইল নম্বর" class="form-input">
-                            <input id="fVillage" type="text" placeholder="গ্রাম / এলাকা" class="form-input">
-                            <div class="grid grid-cols-2 gap-3">
-                                <input id="fNid" type="number" placeholder="NID শেষ ৪ সংখ্যা" class="form-input">
-                                <select id="fBlood" class="form-input font-black uppercase text-xs">
-                                    <option value="" disabled selected>Blood</option>
-                                    <option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option><option>B-</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="p-6 rounded-3xl border-2 border-dashed bg-slate-50 space-y-4" style="border-color:${p.c}">
-                            <div class="flex justify-between items-center">
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">বিকাশ/নগদ (মার্চেন্ট)</p>
-                                <button onclick="copyPayment()" class="text-[9px] font-black text-orange-500 flex items-center gap-1 uppercase"><i data-lucide="copy" size="10"></i> Copy Number</button>
-                            </div>
-                            <h4 class="text-2xl font-black text-center" style="color:${p.c}">${config.payNum}</h4>
-                            <div class="space-y-3">
-                                <input id="fTrx" type="text" placeholder="Transaction ID (TrxID)" class="form-input text-center font-black tracking-widest">
-                                <div class="bg-white/50 p-3 rounded-2xl border border-dashed border-slate-200">
-                                    <p class="text-[8px] font-bold text-slate-400 uppercase mb-2 text-center">সশরীরে পেমেন্ট দিলে প্রাপকের নাম নিচে দিন</p>
-                                    <input id="fReceiver" type="text" placeholder="প্রাপকের নাম (যেমন: ওসমান গনি)" class="form-input text-center text-[10px] py-3">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button onclick="submitApp('${pid}')" class="w-full py-5 rounded-2xl text-white font-black shadow-xl uppercase italic text-sm" style="background:${p.c}">Confirm Registration</button>
-                    </div>
-                </div>
-                <div class="watermark">Rafi Digital Solution</div>
-            `;
-            showPage('application-form');
-        }
-
-        function handleImg(e) {
-            const r = new FileReader();
-            r.onload = () => { selectedImg = r.result; document.getElementById('photoBox').innerHTML = `<img src="${selectedImg}" class="w-full h-full object-cover">`; };
-            r.readAsDataURL(e.target.files[0]);
-        }
-
-        function submitApp(pid) {
-            const v = (id) => document.getElementById(id).value;
-            if(!v('fName') || !v('fMob') || (!v('fTrx') && !v('fReceiver')) || !selectedImg) return alert('অনুগ্রহ করে ছবি এবং পেমেন্ট তথ্য পূরণ করুন!');
-            const mid = 'YCB-' + Math.floor(100000 + Math.random() * 900000);
-            const data = {
-                id: mid, name: v('fName'), fname: v('fFName'), mob: v('fMob'), nid: v('fNid'),
-                village: v('fVillage'), blood: v('fBlood'), trx: v('fTrx') || 'Cash Pay', 
-                receiver: v('fReceiver') || 'Gateway', plan: pid, photo: selectedImg, 
-                status: 'Pending', joined: new Date().toLocaleDateString('bn-BD'), role: 'Member'
-            };
-            window.saveMember(data);
-            alert('আপনার আবেদনটি সফল হয়েছে! ভেরিফিকেশন পর্যন্ত অপেক্ষা করুন।');
-            showPage('home');
-        }
-
-        // --- Administrative Tabs ---
-        window.openSystemAuth = (role) => { currentRole = role; showPage('system-login'); };
-        window.handleSystemAuth = () => {
-            const pass = document.getElementById('sysPass').value;
-            if(pass === config.adminPass) { setTab('db'); showPage('admin-dashboard'); }
-            else alert('ভুল পাসওয়ার্ড!');
-        };
-
-        window.setTab = (t) => {
-            const cont = document.getElementById('adminTabContent');
-            cont.innerHTML = "";
-            if(t === 'db') {
-                cont.innerHTML = db.map(m => `
-                    <div class="bg-white p-4 rounded-2xl border flex justify-between items-center" onclick="showAdminOptions('${m.id}')">
-                        <div class="flex items-center gap-3">
-                            <img src="${m.photo}" class="w-12 h-12 rounded-xl object-cover">
-                            <div>
-                                <p class="text-xs font-black uppercase italic">${m.name}</p>
-                                <p class="text-[8px] text-slate-400 font-bold">${m.id} • ${m.mob}</p>
-                            </div>
-                        </div>
-                        <i data-lucide="chevron-right" class="text-slate-200"></i>
-                    </div>`).join('');
-            } else if(t === 'pending') {
-                const pend = db.filter(m => m.status === 'Pending');
-                cont.innerHTML = pend.map(m => `
-                    <div class="bg-white p-5 rounded-2xl border space-y-3">
-                        <div class="flex gap-4 items-center">
-                            <img src="${m.photo}" class="w-14 h-14 rounded-xl object-cover">
-                            <div class="flex-1">
-                                <p class="font-black text-xs uppercase">${m.name}</p>
-                                <p class="text-[8px] text-orange-500 font-black">Trx: ${m.trx} | Rec: ${m.receiver}</p>
-                            </div>
-                            <button onclick="approveMember('${m.id}')" class="bg-emerald-500 text-white px-5 py-2 rounded-xl text-[9px] font-black uppercase">Verify</button>
-                        </div>
-                    </div>`).join('');
-            } else if(t === 'config') {
-                cont.innerHTML = `
-                <div class="bg-white p-8 rounded-3xl border space-y-4">
-                    <h5 class="text-center font-black italic uppercase text-slate-400 text-[10px] tracking-[4px]">System Configuration</h5>
-                    <input id="cNum" value="${config.payNum}" class="form-input text-xs" placeholder="Payment Gateway">
-                    <input id="cPass" value="${config.adminPass}" class="form-input text-xs" placeholder="Admin PIN">
-                    <textarea id="cNotice" class="form-input text-xs h-24" placeholder="Notice Board Text">${config.notice}</textarea>
-                    <button onclick="updateConfig()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase text-[10px] italic">Save Settings</button>
-                </div>`;
-            } else if(t === 'print') {
-                cont.innerHTML = `<div class="text-center py-20 text-slate-300 text-[10px] font-black uppercase">Printer Section Coming Soon in V2</div>`;
-            }
-            lucide.createIcons();
-        };
-
-        window.showAdminOptions = (id) => {
-            const u = db.find(x => x.id === id);
-            document.getElementById('modalBody').innerHTML = `
-                <div class="text-center space-y-6">
-                    <img src="${u.photo}" class="w-24 h-24 rounded-2xl mx-auto border-4 border-slate-50 shadow-lg object-cover">
-                    <h3 class="text-xl font-black uppercase italic">${u.name}</h3>
-                    <div class="flex gap-2">
-                        <button onclick="renderProfileByID('${u.id}')" class="flex-1 bg-slate-900 text-white py-4 rounded-xl text-[10px] font-black uppercase">View ID Card</button>
-                        <button onclick="deleteMem('${u.id}')" class="bg-red-50 text-red-500 px-4 rounded-xl border border-red-100"><i data-lucide="trash-2" size="18"></i></button>
-                    </div>
-                </div>`;
-            document.getElementById('globalModal').classList.remove('hidden-view');
-            lucide.createIcons();
-        };
-
-        window.updateConfig = () => {
+        function saveGlobalSettings() {
             window.saveConfig({ 
-                payNum: document.getElementById('cNum').value, 
-                adminPass: document.getElementById('cPass').value,
-                notice: document.getElementById('cNotice').value
+                payNum: document.getElementById('newPay').value,
+                adminPass: document.getElementById('newPass').value,
+                notice: document.getElementById('newNotice').value,
+                autoApprove: document.getElementById('autoApp').checked
             });
-            alert('সিস্টেম আপডেট হয়েছে!');
-        };
-
-        window.approveMember = (id) => { window.updateMember(id, {status:'Approved'}); alert('মেম্বারশিপ এপ্রুভ হয়েছে!'); setTab('pending'); };
-        window.deleteMem = (id) => { if(confirm('ডিলিট করতে চান?')) { window.deleteMember(id); closeModal(); setTab('db'); } };
-        window.closeModal = () => document.getElementById('globalModal').classList.add('hidden-view');
-
-        window.authMember = () => {
-            const m = document.getElementById('memMob').value;
-            const n = document.getElementById('memNid').value;
-            const u = db.find(x => x.mob === m && x.nid.endsWith(n));
-            if(u && u.status === 'Approved') renderProfile(u);
-            else if(u) alert('আবেদন পেন্ডিং আছে!');
-            else alert('ভুল তথ্য!');
-        };
-
-        function renderProfileByID(id) {
-            const u = db.find(x => x.id === id);
-            renderProfile(u);
-            closeModal();
+            alert('সেটিংস আপডেট হয়েছে!');
         }
 
-        window.renderProfile = (u) => {
-            const p = plans.find(x => x.id === u.plan);
-            showPage('member-view');
-            document.getElementById('memberContent').innerHTML = `
-                <div class="id-card-container print-area" id="idFull">
-                    <div class="id-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
-                        <div class="id-front">
-                            <div class="h-32 p-8 text-white relative flex flex-col justify-end" style="background:${p.c}">
-                                <div class="absolute top-6 left-8 text-left">
-                                    <h5 class="text-sm font-black uppercase leading-none italic">Youth Community</h5>
-                                    <p class="text-[7px] font-bold opacity-60 uppercase tracking-[2px]">Baraigram, Natore</p>
-                                </div>
-                                <div class="absolute top-6 right-8 bg-white/10 px-3 py-1 rounded-full text-[8px] font-black italic">VERIFIED</div>
-                            </div>
-                            
-                            <div class="relative -mt-16 text-center px-8">
-                                <img src="${u.photo}" class="w-32 h-32 mx-auto rounded-[2.5rem] border-[10px] border-white shadow-xl object-cover relative z-10">
-                                <h4 class="mt-4 text-2xl font-black text-slate-800 uppercase italic tracking-tighter leading-none">${u.name}</h4>
-                                <span class="inline-block px-6 py-2 rounded-full text-[9px] font-black text-white mt-3 uppercase tracking-widest shadow-md" style="background:${p.c}">${p.n} Member</span>
-                                
-                                <div class="mt-8 grid grid-cols-2 gap-3 text-left text-[10px] font-black">
-                                    <div class="bg-slate-50 p-4 rounded-2xl border"><span class="text-[6px] text-slate-400 block mb-0.5">ID NUMBER</span>${u.id}</div>
-                                    <div class="bg-slate-50 p-4 rounded-2xl border"><span class="text-[6px] text-slate-400 block mb-0.5">BLOOD TYPE</span><span class="text-red-600">${u.blood}</span></div>
-                                    <div class="bg-slate-50 p-4 rounded-2xl border"><span class="text-[6px] text-slate-400 block mb-0.5">JOIN DATE</span>${u.joined}</div>
-                                    <div class="bg-slate-50 p-4 rounded-2xl border"><span class="text-[6px] text-slate-400 block mb-0.5">LOCATION</span>${u.village}</div>
-                                </div>
+        function showMemberOptions(id) {
+            const m = db.find(x => x.id === id);
+            const modal = document.createElement('div');
+            modal.id = "optModal";
+            modal.className = "fixed inset-0 z-[200] bg-slate-900/80 flex items-center justify-center p-6";
+            modal.innerHTML = `
+                <div class="bg-white max-w-xs w-full rounded-[3rem] p-10 relative text-center">
+                    <button onclick="document.getElementById('optModal').remove()" class="absolute top-6 right-6"><i data-lucide="x"></i></button>
+                    <img src="${m.photo}" class="w-20 h-20 rounded-2xl mx-auto mb-4 object-cover">
+                    <h4 class="text-lg font-black">${m.name}</h4>
+                    <div class="grid gap-3 mt-8">
+                        <button onclick="renderMemberID('${m.id}'); document.getElementById('optModal').remove();" class="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase">ID Card</button>
+                        <button onclick="openApplication('${m.plan}', db.find(x=>x.id==='${m.id}')); document.getElementById('optModal').remove();" class="w-full py-4 bg-slate-100 rounded-xl font-black text-[10px] uppercase">Edit</button>
+                        <button onclick="if(confirm('Delete?')) { window.deleteMember('${m.id}'); document.getElementById('optModal').remove(); }" class="w-full py-4 bg-red-50 text-red-500 rounded-xl font-black text-[10px] uppercase">Delete</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal); lucide.createIcons();
+        }
 
-                                <div class="mt-8 flex justify-between items-end pt-6 border-t border-dashed">
-                                    <div class="text-left">
-                                        <img src="https://i.ibb.co/kVCt3f9m/PLPL-Osman20260411-123334.png" class="h-8 mb-1 mix-blend-multiply brightness-50 opacity-90 object-contain">
-                                        <p class="text-[7px] font-black text-slate-400 uppercase tracking-widest leading-none">Authority Sign</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=YCB-VERIFY-${u.id}" class="w-14 h-14 p-1 bg-white border rounded-xl shadow-sm">
-                                    </div>
+        function authMember() {
+            const m = document.getElementById('loginMob').value;
+            const n = document.getElementById('loginNid').value;
+            const u = db.find(x => x.mob === m && x.nid.endsWith(n));
+            if(u && u.status === 'Approved') renderMemberProfile(u);
+            else alert('তথ্য ভুল বা এপ্রুভাল বাকি!');
+        }
+
+        function renderMemberProfile(u) {
+            document.getElementById('profileContent').innerHTML = `
+                <div class="max-w-md mx-auto bg-white rounded-[3rem] p-10 shadow-2xl border text-center relative no-print">
+                    <button onclick="showPage('home')" class="absolute top-8 right-8"><i data-lucide="power"></i></button>
+                    <img src="${u.photo}" class="w-24 h-24 rounded-3xl mx-auto mb-6 object-cover shadow-2xl">
+                    <h3 class="text-2xl font-black">${u.name}</h3>
+                    <div class="grid grid-cols-2 gap-3 mt-10">
+                        <button onclick="renderMemberID('${u.id}')" class="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col items-center gap-3"><i data-lucide="id-card"></i><span class="text-[9px] font-black uppercase">ID Card</span></button>
+                        <button onclick="renderReceipt(db.find(x=>x.id==='${u.id}'))" class="p-6 bg-orange-50 text-orange-600 rounded-[2rem] flex flex-col items-center gap-3"><i data-lucide="file-text"></i><span class="text-[9px] font-black uppercase">Receipt</span></button>
+                    </div>
+                </div>
+            `;
+            showPage('member-profile');
+        }
+
+        function renderMemberID(id) {
+            const u = db.find(x => x.id === id);
+            const p = plans.find(x => x.id === u.plan);
+            document.getElementById('profileContent').innerHTML = `
+                <div class="id-card-wrapper" onclick="this.querySelector('.id-card-inner').classList.toggle('is-flipped')">
+                    <div class="id-card-inner">
+                        <div class="id-front">
+                            <div class="h-28 text-center pt-8 text-white relative" style="background:${p.c}">
+                                <h2 class="font-outfit text-[14px] font-black uppercase tracking-tight whitespace-nowrap px-4">Youth Community Baraigram</h2>
+                                <p class="text-[6px] font-bold opacity-60 uppercase tracking-[4px] mt-1">Baraigram, Natore</p>
+                                <div class="absolute -bottom-14 left-1/2 -translate-x-1/2 w-28 h-28 bg-white p-1 rounded-2xl shadow-2xl">
+                                    <img src="${u.photo}" class="w-full h-full object-cover rounded-xl">
                                 </div>
                             </div>
-                            <div class="watermark">Rafi Digital Solution</div>
+                            <div class="mt-16 text-center px-6">
+                                <h4 class="text-xl font-black italic uppercase mt-2">${u.name}</h4>
+                                <div class="inline-block px-4 py-1 rounded-full text-[9px] font-black text-white uppercase mt-1" style="background:${p.c}">${p.n} Member</div>
+                                <div class="grid grid-cols-2 gap-2 mt-6 text-left">
+                                    <div class="bg-slate-50 p-2 rounded-xl border"><p class="text-[6px] text-slate-400 font-black uppercase">Blood Group</p><p class="text-[10px] font-black text-red-500">${u.blood || 'N/A'}</p></div>
+                                    <div class="bg-slate-50 p-2 rounded-xl border"><p class="text-[6px] text-slate-400 font-black uppercase">Occupation</p><p class="text-[9px] font-black truncate">${u.job || 'N/A'}</p></div>
+                                    <div class="bg-slate-50 p-2 rounded-xl border"><p class="text-[6px] text-slate-400 font-black uppercase">Member ID</p><p class="text-[10px] font-black">#${u.id}</p></div>
+                                    <div class="bg-slate-50 p-2 rounded-xl border"><p class="text-[6px] text-slate-400 font-black uppercase">Contact</p><p class="text-[10px] font-black">${u.mob}</p></div>
+                                </div>
+                                <div class="mt-6 flex justify-between items-end px-2">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${u.id}" class="w-10 h-10">
+                                    <div class="text-right"><img src="${signUrl}" class="w-16 mx-auto"><p class="text-[6px] font-black uppercase border-t pt-1">Authority Signature</p></div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="id-back flex flex-col justify-between p-10 text-center bg-white">
-                            <div class="space-y-6">
-                                <div class="w-16 h-16 bg-slate-900 rounded-[1.5rem] mx-auto flex items-center justify-center text-orange-500 shadow-xl border-b-4 border-orange-600"><i data-lucide="shield-check" size="24"></i></div>
-                                <h5 class="text-[10px] font-black uppercase tracking-[4px] text-slate-800 italic underline decoration-orange-500 underline-offset-4">Terms & Conditions</h5>
-                                <ul class="text-[8px] text-left text-slate-500 font-bold space-y-3 list-none">
-                                    <li class="flex gap-2"><span class="text-orange-500">•</span> সংগঠনের নিয়ম মেনে চলতে বাধ্য থাকবেন।</li>
-                                    <li class="flex gap-2"><span class="text-orange-500">•</span> এটি একটি বৈধ মেম্বারশিপ আইডেন্টিটি কার্ড।</li>
-                                    <li class="flex gap-2"><span class="text-orange-500">•</span> হারানো গেলে অফিসে রিপোর্ট করুন।</li>
-                                </ul>
-                            </div>
-                            <div class="pt-6 border-t border-dashed">
-                                <p class="text-[9px] font-black text-slate-800 uppercase italic">Head Office</p>
-                                <p class="text-[7px] font-bold text-slate-400 uppercase">বড়াইগ্রাম উপজেলা রোড, বড়াইগ্রাম, নাটোর</p>
-                                <div class="mt-4 inline-block px-4 py-1.5 bg-slate-900 text-orange-500 rounded-full text-[8px] font-black italic">Hotline: +8801768579957</div>
-                            </div>
-                            <div class="watermark">Rafi Digital Solution</div>
+                        <div class="id-back p-8 flex flex-col justify-between text-center">
+                            <div><h5 class="text-[10px] font-black uppercase tracking-[5px] mb-4">Terms & Details</h5>
+                            <p class="text-[8px] text-slate-500 font-bold mb-4">এই কার্ডটি সংগঠনের সম্পত্তি। মেয়াদ উত্তীর্ণ ২০২৭।</p>
+                            <div class="text-left bg-slate-50 p-3 rounded-xl border space-y-2">
+                                <p class="text-[7px] font-black uppercase text-slate-400">Father's Name</p><p class="text-[10px] font-black">${u.pita || 'N/A'}</p>
+                                <p class="text-[7px] font-black uppercase text-slate-400">Valid Up To</p><p class="text-[10px] font-black">FEB 2027</p>
+                            </div></div>
+                            <div class="pt-6 border-t text-[8px] font-black uppercase tracking-widest">Baraigram, Natore.</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="mt-10 space-y-3 no-print max-w-xs mx-auto">
-                    <button onclick="window.print()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black shadow-lg uppercase italic text-xs flex items-center justify-center gap-3"><i data-lucide="printer" size="16"></i> Print / Save PDF</button>
-                    <button onclick="showPage('home')" class="w-full text-[10px] font-black text-slate-400 uppercase tracking-widest">Logout Portal</button>
-                </div>`;
-            lucide.createIcons();
-        };
+                <div class="flex gap-4 max-w-xs mx-auto mt-10 no-print">
+                    <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase shadow-xl">Print</button>
+                    <button onclick="renderMemberProfile(db.find(x=>x.id==='${u.id}'))" class="py-4 px-6 bg-slate-100 rounded-2xl"><i data-lucide="arrow-left"></i></button>
+                </div>
+            `;
+            showPage('member-profile');
+        }
+
+        function searchDB() {
+            const q = document.getElementById('dbSearch').value.toLowerCase();
+            document.querySelectorAll('#dbBody > div').forEach(el => el.style.display = el.innerText.toLowerCase().includes(q) ? '' : 'none');
+        }
 
         renderHome();
     </script>
-</body> 
+</body>
 </html>

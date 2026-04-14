@@ -20,27 +20,22 @@
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .tv-marquee { display: inline-block; white-space: nowrap; animation: marquee 80s linear infinite; }
         
-        /* ID Card Layout & Positioning Correction */
+        /* ID Card Layout */
         .id-card-wrapper { width: 320px; height: 500px; perspective: 1000px; margin: 0 auto; position: relative; }
         .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
         .id-card-inner.is-flipped { transform: rotateY(180deg); }
-        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); background: white; }
+        .id-front, .id-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2); background: white; border: 1px solid #e2e8f0; }
         .id-back { transform: rotateY(180deg); }
-        
-        /* Text Position Adjustment - 3pt Upward to avoid image overlap */
-        .id-text-container { transform: translateY(-3pt); }
 
         .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(249, 115, 22, 0.4); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
 
         @media print { 
             .no-print { display: none !important; } 
-            .print-only { display: block !important; } 
-            body { background: white; margin: 0; padding: 0; }
-            .id-card-wrapper { width: 100%; height: auto; perspective: none; }
-            .id-card-inner { transform: none !important; display: flex; flex-direction: column; gap: 30px; align-items: center; }
-            .id-front, .id-back { position: relative; transform: none !important; box-shadow: none; border: 1px solid #eee; display: block !important; page-break-after: always; }
+            body { background: white !important; margin: 0; padding: 0; }
+            .id-card-wrapper { width: 3.375in !important; height: auto !important; margin: 0 auto !important; transform: scale(1.2); transform-origin: top center; }
+            .id-card-inner { transform: none !important; transition: none !important; }
+            .id-front, .id-back { position: relative !important; transform: none !important; box-shadow: none !important; display: block !important; page-break-after: always; width: 3.375in !important; height: 5.3in !important; border: 1px solid #000 !important; margin: 20px auto !important; }
         }
     </style>
 </head>
@@ -60,7 +55,7 @@
         </div>
         <div class="flex gap-2">
             <button onclick="showPage('member-login')" class="p-2.5 bg-slate-100 text-slate-600 rounded-xl btn-hover"><i data-lucide="user" size="20"></i></button>
-            <button onclick="openSystemAuth()" class="p-2.5 bg-orange-50 text-orange-600 rounded-xl btn-hover"><i data-lucide="shield-check" size="20"></i></button>
+            <button onclick="openAuthSelection()" class="p-2.5 bg-orange-50 text-orange-600 rounded-xl btn-hover"><i data-lucide="shield-check" size="20"></i></button>
         </div>
     </nav>
 
@@ -73,32 +68,7 @@
                     <p class="mt-4 text-slate-400 text-sm font-medium">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি</p>
                 </div>
             </div>
-            
             <div class="px-5 -mt-16 grid grid-cols-1 gap-4 mb-12" id="planGrid"></div>
-
-            <div class="px-6 space-y-12 pb-20">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100">
-                        <i data-lucide="target" class="text-orange-500 mb-4" size="32"></i>
-                        <h4 class="text-xl font-black mb-3">আমাদের লক্ষ্য</h4>
-                        <p class="text-sm text-slate-500 font-medium">বড়াইগ্রামের প্রতিটি শিক্ষিত ও উদ্যমী তরুণকে একটি প্ল্যাটফর্মে নিয়ে আসা এবং উপজেলার ডিজিটাল ও সামাজিক উন্নয়ন নিশ্চিত করা।</p>
-                    </div>
-                    <div class="p-8 bg-white rounded-[2.5rem] shadow-sm border border-slate-100">
-                        <i data-lucide="eye" class="text-orange-500 mb-4" size="32"></i>
-                        <h4 class="text-xl font-black mb-3">আমাদের ভিশন</h4>
-                        <p class="text-sm text-slate-500 font-medium">একটি স্মার্ট বড়াইগ্রাম গড়ে তোলা যেখানে প্রযুক্তি আর তারুণ্য হবে উন্নয়নের প্রধান হাতিয়ার।</p>
-                    </div>
-                </div>
-
-                <div class="p-10 bg-orange-50 rounded-[3rem] border border-orange-100">
-                    <h3 class="text-2xl font-black mb-8 text-center">মেম্বারশিপের সুবিধাসমূহ</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">ডিজিটাল মেম্বারশিপ আইডি কার্ড</p></div>
-                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">সংগঠনের সকল ইভেন্টে সরাসরি অংশগ্রহণ</p></div>
-                        <div class="flex gap-4"><i data-lucide="check-circle" class="text-orange-500 shrink-0"></i><p class="text-sm font-bold">দক্ষতা উন্নয়নে ফ্রি ট্রেনিং সুবিধা</p></div>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <section id="application-form" class="hidden-view px-5 py-10 no-print">
@@ -108,6 +78,52 @@
             </div>
         </section>
 
+        <section id="auth-selection" class="hidden-view px-6 pt-32 no-print">
+            <div class="max-w-sm mx-auto bg-white p-10 rounded-[3rem] shadow-2xl text-center space-y-4">
+                <h3 class="text-xl font-black mb-6 italic uppercase">Login Portal</h3>
+                <button onclick="openSystemAuth('admin')" class="w-full p-6 bg-slate-900 text-white rounded-2xl font-black flex items-center justify-between">
+                    <span>এডমিন প্যানেল</span><i data-lucide="shield-alert"></i>
+                </button>
+                <button onclick="openSystemAuth('printer')" class="w-full p-6 bg-orange-500 text-white rounded-2xl font-black flex items-center justify-between">
+                    <span>প্রেস লগইন</span><i data-lucide="printer"></i>
+                </button>
+                <button onclick="showPage('home')" class="text-slate-400 text-sm font-bold">ফিরে যান</button>
+            </div>
+        </section>
+
+        <section id="system-auth" class="hidden-view px-6 pt-32 no-print">
+            <div class="max-w-sm mx-auto bg-slate-900 p-10 rounded-[3rem] text-center text-white shadow-2xl relative">
+                <div class="w-16 h-16 bg-orange-500 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg"><i data-lucide="lock" size="28"></i></div>
+                <h3 id="authTitle" class="text-xl font-black mb-2 font-outfit uppercase italic">Admin Access</h3>
+                <input id="adminKey" type="password" placeholder="••••" class="w-full p-4 bg-white/5 border-none rounded-2xl mb-6 text-center text-3xl tracking-[15px] text-orange-500 outline-none">
+                <button onclick="handleSystemLogin()" class="w-full bg-orange-500 py-4 rounded-xl font-black text-xs uppercase tracking-widest">Unlock</button>
+            </div>
+        </section>
+
+        <section id="admin-dashboard" class="hidden-view px-4 py-8 no-print">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex items-center justify-between mb-8 bg-slate-900 p-6 rounded-[2rem] text-white">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="layout-grid"></i></div>
+                        <div><h4 id="dashTitle" class="font-outfit text-lg font-black uppercase italic">Control <span class="text-orange-500">Center</span></h4><p id="dashSub" class="text-[8px] font-black opacity-40 uppercase">Admin Access</p></div>
+                    </div>
+                    <button onclick="location.reload()" class="p-3 bg-red-500/20 text-red-400 rounded-xl"><i data-lucide="power" size="20"></i></button>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6" id="adminTabs">
+                    <button onclick="renderTab('db')" class="tab-btn px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">ডাটাবেজ</button>
+                    <button id="tabPending" onclick="renderTab('approve')" class="tab-btn px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">পেন্ডিং</button>
+                    <button id="tabAll" onclick="renderTab('all-data')" class="tab-btn px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">All Data</button>
+                    <button id="tabFin" onclick="renderTab('finance')" class="tab-btn px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">হিসাব</button>
+                    <button id="tabSet" onclick="renderTab('settings')" class="tab-btn px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">সেটিংস</button>
+                </div>
+                <div id="adminTabDisplay" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm min-h-[500px]"></div>
+            </div>
+        </section>
+
+        <section id="member-profile" class="hidden-view px-5 py-10">
+            <div id="profileContent"></div>
+        </section>
+        
         <section id="receipt-view" class="hidden-view px-5 py-12">
             <div id="receiptContent"></div>
         </section>
@@ -125,54 +141,34 @@
             </div>
         </section>
 
-        <section id="admin-dashboard" class="hidden-view px-4 py-8 no-print">
-            <div class="max-w-5xl mx-auto">
-                <div class="flex items-center justify-between mb-8 bg-slate-900 p-6 rounded-[2rem] text-white">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg"><i data-lucide="layout-grid"></i></div>
-                        <div><h4 class="font-outfit text-lg font-black uppercase italic">Control <span class="text-orange-500">Center</span></h4><p class="text-[8px] font-black opacity-40">VER 9.0</p></div>
-                    </div>
-                    <button onclick="location.reload()" class="p-3 bg-red-500/20 text-red-400 rounded-xl"><i data-lucide="power" size="20"></i></button>
-                </div>
-                <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-6" id="adminTabs">
-                    <button onclick="renderTab('db')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">ডাটাবেজ</button>
-                    <button onclick="renderTab('approve')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">পেন্ডিং</button>
-                    <button onclick="renderTab('finance')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">হিসাব</button>
-                    <button onclick="renderTab('settings')" class="px-6 py-3 bg-white border rounded-2xl font-black text-[10px] uppercase whitespace-nowrap shadow-sm">সেটিংস</button>
-                </div>
-                <div id="adminTabDisplay" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm min-h-[500px]"></div>
-            </div>
-        </section>
-
-        <section id="system-auth" class="hidden-view px-6 pt-32 no-print">
-            <div class="max-w-sm mx-auto bg-slate-900 p-10 rounded-[3rem] text-center text-white shadow-2xl relative">
-                <button onclick="showPage('home')" class="absolute top-6 right-6 text-slate-600"><i data-lucide="x"></i></button>
-                <div class="w-16 h-16 bg-orange-500 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg"><i data-lucide="lock" size="28"></i></div>
-                <h3 class="text-xl font-black mb-2 font-outfit uppercase">Admin Access</h3>
-                <input id="adminKey" type="password" placeholder="••••" class="w-full p-4 bg-white/5 border-none rounded-2xl mb-6 text-center text-3xl tracking-[15px] text-orange-500 outline-none">
-                <button onclick="handleAdminAuth()" class="w-full bg-orange-500 py-4 rounded-xl font-black text-xs uppercase tracking-widest">Dashboard Unlock</button>
-            </div>
-        </section>
-
-        <section id="member-profile" class="hidden-view px-5 py-10">
-            <div id="profileContent"></div>
-        </section>
     </main>
 
-    <footer class="bg-slate-100 pt-20 pb-10 no-print relative overflow-hidden border-t border-slate-200">
+    <footer class="bg-white border-t border-slate-100 pt-16 pb-10 no-print relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6 text-center">
             <div class="flex flex-col items-center gap-4 mb-8">
                 <div class="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center text-white"><i data-lucide="zap" fill="currentColor"></i></div>
                 <div>
-                    <h2 class="font-outfit text-3xl font-black text-slate-900 tracking-tighter">YCB <span class="text-orange-500">HUB</span></h2>
+                    <h2 class="font-outfit text-3xl font-black text-slate-900 tracking-tighter uppercase italic">YCB <span class="text-orange-500">HUB</span></h2>
                     <p class="text-[8px] font-black text-slate-400 uppercase tracking-[4px]">Baraigram, Natore</p>
                 </div>
             </div>
-            <p class="text-slate-500 text-sm font-medium max-w-sm mx-auto mb-10">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি। আমরা বড়াইগ্রামের তারুণ্যকে একত্রিত করে একটি সুন্দর সমাজ গড়ার লক্ষ্যে কাজ করছি।</p>
-            <div class="flex justify-center gap-6 mb-10">
-                <a href="tel:+8801768579957" class="p-3 bg-white rounded-full shadow-sm text-orange-500 border"><i data-lucide="phone" size="20"></i></a>
-                <a href="https://wa.me/8801763752653" target="_blank" class="p-3 bg-white rounded-full shadow-sm text-emerald-500 border"><i data-lucide="message-circle" size="20"></i></a>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-12">
+                <div class="flex flex-col items-center gap-2">
+                    <i data-lucide="map-pin" class="text-orange-500" size="20"></i>
+                    <p class="text-xs font-black uppercase text-slate-500 tracking-widest">অফিস ঠিকানা</p>
+                    <p class="text-sm font-bold">লক্ষীকোল বাজার, বড়াইগ্রাম, নাটোর</p>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <i data-lucide="phone-call" class="text-orange-500" size="20"></i>
+                    <p class="text-xs font-black uppercase text-slate-500 tracking-widest">যোগাযোগ</p>
+                    <p class="text-sm font-bold">জাহিদ হাসান বিপুল- 01768-579957</p>
+                    <p class="text-xs font-black uppercase text-slate-500 tracking-widest">Devoloper Contact- +8801763752653</p>
+                </div>
             </div>
+
+            <p class="text-slate-500 text-[10px] font-medium max-w-sm mx-auto mb-10 leading-relaxed">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি। আমরা বড়াইগ্রামের তারুণ্যকে একত্রিত করে একটি সুন্দর সমাজ গড়ার লক্ষ্যে কাজ করছি।</p>
+            
             <div class="pt-8 border-t border-slate-200"><p class="text-[8px] font-black text-slate-400 uppercase tracking-[6px]">© 2026 YOUTH COMMUNITY BARAIGRAM | POWERED BY RAFI DIGITAL SOLUTION</p></div>
         </div>
     </footer>
@@ -185,7 +181,7 @@
         const app = initializeApp(firebaseConfig);
         const rdb = getDatabase(app);
 
-        window.cfg = { adminPass: 'rafi2026', payNum: '01763752653', notice: 'বড়াইগ্রামের তারুণ্যের অগ্রযাত্রা শুরু হলো!', autoApprove: false, prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 } };
+        window.cfg = { adminPass: 'rafi2026', printerPass: 'press2026', payNum: '01763752653', notice: 'বড়াইগ্রামের তারুণ্যের অগ্রযাত্রা শুরু হলো!', prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 } };
         window.plans = [
             {id:'Star', n:'স্টার', g:'from-orange-500 to-amber-500', c:'#f97316', i:'star'},
             {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield'},
@@ -200,20 +196,21 @@
             renderHome();
         });
 
-        window.saveMember = (m) => set(ref(rdb, 'members/' + m.id), m);
-        window.updateMember = (id, data) => update(ref(rdb, 'members/' + id), data);
-        window.deleteMember = (id) => remove(ref(rdb, 'members/' + id));
-        
         onValue(ref(rdb, 'config'), (snap) => {
             if(snap.val()) window.cfg = {...window.cfg, ...snap.val()};
             renderHome();
         });
+
+        window.saveMember = (m) => set(ref(rdb, 'members/' + m.id), m);
+        window.updateMember = (id, data) => update(ref(rdb, 'members/' + id), data);
+        window.deleteMember = (id) => remove(ref(rdb, 'members/' + id));
         window.saveConfig = (c) => update(ref(rdb, 'config'), c);
     </script>
 
     <script>
         let currentAppPhoto = "";
         let selectedPayMethod = "";
+        let authType = 'admin';
         const signUrl = "https://i.ibb.co.com/kVCt3f9m/PLPL-Osman20260411-123334.png";
 
         function showPage(id) {
@@ -236,19 +233,11 @@
             lucide.createIcons();
         }
 
-        function handleFile(e) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                currentAppPhoto = reader.result;
-                document.getElementById('photoPrev').innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-
         function setPayment(method) {
             selectedPayMethod = method;
-            document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('bg-orange-500', 'text-white'));
-            document.getElementById('pay-'+method).classList.add('bg-orange-500', 'text-white');
+            document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('bg-orange-500', 'text-white', 'border-orange-500'));
+            const active = document.getElementById('pay-'+method);
+            active.classList.add('bg-orange-500', 'text-white', 'border-orange-500');
             document.getElementById('handCashBox').classList.toggle('hidden', method !== 'Hand');
             document.getElementById('trxBox').classList.toggle('hidden', method === 'Hand');
         }
@@ -265,11 +254,12 @@
                         ${currentAppPhoto ? `<img src="${currentAppPhoto}" class="w-full h-full object-cover">` : '<i data-lucide="camera" class="text-slate-300"></i>'}
                     </div>
                     <input type="file" id="fileInp" class="hidden" accept="image/*" onchange="handleFile(event)">
+                    
                     <div class="grid grid-cols-1 gap-4">
-                        <input id="fName" value="${editData ? editData.name : ''}" type="text" placeholder="মেম্বারের পুরো নাম" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                        <input id="fName" value="${editData ? editData.name : ''}" type="text" placeholder="আপনার পুরো নাম" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
                         <div class="grid grid-cols-2 gap-4">
                             <input id="fPita" value="${editData ? (editData.pita || '') : ''}" type="text" placeholder="পিতার নাম" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
-                            <input id="fJob" value="${editData ? (editData.job || '') : ''}" type="text" placeholder="পেশা" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
+                            <input id="fJob" value="${editData ? (editData.job || '') : ''}" type="text" placeholder="আপনার পেশা" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <input id="fMob" value="${editData ? editData.mob : ''}" type="tel" placeholder="মোবাইল নম্বর" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
@@ -279,31 +269,28 @@
                             <input id="fVill" value="${editData ? editData.vill : ''}" type="text" placeholder="গ্রাম / এলাকা" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
                             <select id="fBlood" class="w-full p-4 bg-slate-50 rounded-2xl border font-bold text-sm outline-none focus:border-orange-500">
                                 <option value="">রক্তের গ্রুপ</option>
-                                <option value="A+" ${editData && editData.blood === 'A+' ? 'selected' : ''}>A+</option>
-                                <option value="B+" ${editData && editData.blood === 'B+' ? 'selected' : ''}>B+</option>
-                                <option value="O+" ${editData && editData.blood === 'O+' ? 'selected' : ''}>O+</option>
-                                <option value="AB+" ${editData && editData.blood === 'AB+' ? 'selected' : ''}>AB+</option>
+                                ${['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'].map(bg => `<option value="${bg}" ${editData && editData.blood === bg ? 'selected' : ''}>${bg}</option>`).join('')}
                             </select>
                         </div>
                     </div>
+
                     ${!editData ? `
                     <div class="p-6 bg-slate-900 rounded-[2.5rem] text-white">
-                        <p class="text-[8px] font-black uppercase text-orange-500 tracking-widest mb-3 text-center">Payment Gateway</p>
+                        <div class="flex items-center justify-between mb-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <div><p class="text-[8px] uppercase opacity-40">Payment Number</p><p class="text-lg font-black text-orange-400 font-outfit">${cfg.payNum}</p></div>
+                            <button onclick="navigator.clipboard.writeText('${cfg.payNum}'); alert('Copied!')" class="p-3 bg-orange-500 rounded-xl"><i data-lucide="copy" size="16"></i></button>
+                        </div>
                         <div class="grid grid-cols-2 gap-2 mb-4">
-                            <button id="pay-Bkash" onclick="setPayment('Bkash')" class="pay-option p-3 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">বিকাশ</button>
-                            <button id="pay-Nagad" onclick="setPayment('Nagad')" class="pay-option p-3 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">নগদ</button>
-                            <button id="pay-Rocket" onclick="setPayment('Rocket')" class="pay-option p-3 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">রকেট</button>
-                            <button id="pay-Hand" onclick="setPayment('Hand')" class="pay-option p-3 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">হাতে হাতে</button>
+                            <button id="pay-Bkash" onclick="setPayment('Bkash')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">বিকাশ</button>
+                            <button id="pay-Nagad" onclick="setPayment('Nagad')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">নগদ</button>
+                            <button id="pay-Rocket" onclick="setPayment('Rocket')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">রকেট</button>
+                            <button id="pay-Hand" onclick="setPayment('Hand')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">হাতে হাতে</button>
                         </div>
-                        <div id="trxBox" class="space-y-2">
-                             <p class="text-[9px] text-center opacity-40">Send Money To: ${cfg.payNum}</p>
-                             <input id="fTrx" type="text" placeholder="Transaction ID" class="w-full p-4 bg-white/10 border-none rounded-xl text-center font-black tracking-widest text-orange-400 outline-none">
-                        </div>
-                        <div id="handCashBox" class="hidden">
-                             <input id="fReceiver" type="text" placeholder="টাকা কার হাতে দিয়েছেন? (নাম)" class="w-full p-4 bg-white/10 border-none rounded-xl text-center font-bold text-sm outline-none">
-                        </div>
+                        <div id="trxBox"><input id="fTrx" type="text" placeholder="Transaction ID/আপনি যেই নম্বর থেকে টাকা দিয়েছেন" class="w-full p-4 bg-white/10 rounded-xl text-center font-black tracking-widest text-orange-400 outline-none"></div>
+                        <div id="handCashBox" class="hidden"><input id="fReceiver" type="text" placeholder="কার কাছে টাকা দিয়েছেন?" class="w-full p-4 bg-white/10 rounded-xl text-center font-bold text-sm outline-none"></div>
                     </div>` : ''}
-                    <button onclick="${editData ? `processEdit('${editData.id}')` : `submitApp('${pid}')`}" class="w-full py-5 bg-orange-500 text-white rounded-[2rem] font-black uppercase text-xs tracking-widest btn-hover shadow-xl">
+
+                    <button onclick="${editData ? `processEdit('${editData.id}')` : `submitApp('${pid}')`}" class="w-full py-6 bg-orange-500 text-white rounded-[2rem] font-black uppercase text-xs tracking-widest btn-hover shadow-xl shadow-orange-500/20">
                         ${editData ? 'আপডেট নিশ্চিত করুন' : 'আবেদন সম্পন্ন করুন'}
                     </button>
                 </div>
@@ -311,26 +298,31 @@
             showPage('application-form'); lucide.createIcons();
         }
 
+        function handleFile(e) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                currentAppPhoto = reader.result;
+                document.getElementById('photoPrev').innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
         function submitApp(pid) {
             const v = (id) => document.getElementById(id).value;
-            if(!v('fName') || !v('fMob') || !currentAppPhoto || !selectedPayMethod) return alert('ছবি ও পেমেন্ট মেথড সহ সব তথ্য দিন!');
+            if(!v('fName') || !v('fMob') || !currentAppPhoto || !selectedPayMethod) return alert('সব তথ্য দিন!');
             const member = {
                 id: 'YCB' + Math.floor(1000 + Math.random() * 9000),
                 name: v('fName'), pita: v('fPita'), mob: v('fMob'), nid: v('fNid'), vill: v('fVill'), job: v('fJob'), blood: v('fBlood'),
-                payMethod: selectedPayMethod, trx: v('fTrx'), receiver: v('fReceiver'),
+                payMethod: selectedPayMethod, trx: v('fTrx') || '', receiver: v('fReceiver') || '',
                 plan: pid, photo: currentAppPhoto, status: 'Pending', joined: new Date().toLocaleDateString('bn-BD')
             };
-            window.saveMember(member);
-            renderReceipt(member);
+            window.saveMember(member); renderReceipt(member);
         }
 
         function processEdit(id) {
             const v = (id) => document.getElementById(id).value;
-            window.updateMember(id, {
-                name: v('fName'), pita: v('fPita'), mob: v('fMob'), nid: v('fNid'), vill: v('fVill'), job: v('fJob'), blood: v('fBlood'), photo: currentAppPhoto
-            });
-            alert('তথ্য আপডেট হয়েছে!');
-            showPage('member-profile');
+            window.updateMember(id, { name: v('fName'), pita: v('fPita'), mob: v('fMob'), nid: v('fNid'), vill: v('fVill'), job: v('fJob'), blood: v('fBlood'), photo: currentAppPhoto });
+            alert('তথ্য আপডেট হয়েছে!'); showPage('home');
         }
 
         function renderReceipt(m) {
@@ -339,10 +331,9 @@
                 <div class="max-w-lg mx-auto bg-white p-10 rounded-[3rem] shadow-2xl border relative overflow-hidden">
                     <div class="text-center mb-10"><h2 class="font-outfit text-2xl font-black italic">YCB <span class="text-orange-500">INVOICE</span></h2></div>
                     <div class="space-y-4 mb-10 text-xs">
-                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400">Transaction ID</span><span class="font-black">#${m.id}</span></div>
-                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400">Name</span><span class="font-black">${m.name}</span></div>
-                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400">Payment Method</span><span class="font-black uppercase">${m.payMethod}</span></div>
-                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400">Trx/Receiver</span><span class="font-black">${m.trx || m.receiver || 'N/A'}</span></div>
+                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400 uppercase tracking-widest">Transaction ID</span><span class="font-black">#${m.id}</span></div>
+                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400 uppercase tracking-widest">Name</span><span class="font-black">${m.name}</span></div>
+                        <div class="flex justify-between border-b pb-2"><span class="font-bold text-slate-400 uppercase tracking-widest">Payment Method</span><span class="font-black uppercase">${m.payMethod}</span></div>
                         <div class="flex justify-between bg-slate-50 p-4 rounded-xl"><span class="font-black">Total Paid</span><span class="font-black text-lg">৳${cfg.prices[m.plan]}</span></div>
                     </div>
                     <div class="flex justify-between items-end mt-12">
@@ -358,8 +349,24 @@
             showPage('receipt-view');
         }
 
-        function handleAdminAuth() {
-            if(document.getElementById('adminKey').value === cfg.adminPass) {
+        function openAuthSelection() { showPage('auth-selection'); }
+
+        function openSystemAuth(type) {
+            authType = type;
+            document.getElementById('authTitle').innerText = type === 'admin' ? 'Admin Access' : 'Printer Access';
+            document.getElementById('adminKey').value = ""; showPage('system-auth');
+        }
+
+        function handleSystemLogin() {
+            const key = document.getElementById('adminKey').value;
+            if ((authType === 'admin' && key === cfg.adminPass) || (authType === 'printer' && key === cfg.printerPass)) {
+                if (authType === 'printer') {
+                    document.getElementById('dashTitle').innerHTML = 'Printer <span class="text-orange-500">Portal</span>';
+                    ['tabPending', 'tabFin', 'tabSet'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                } else {
+                    document.getElementById('dashTitle').innerHTML = 'Control <span class="text-orange-500">Center</span>';
+                    ['tabPending', 'tabFin', 'tabSet'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+                }
                 renderTab('db'); showPage('admin-dashboard');
             } else alert('ভুল পাসওয়ার্ড!');
         }
@@ -368,7 +375,7 @@
             const disp = document.getElementById('adminTabDisplay');
             if(t === 'db') {
                 disp.innerHTML = `
-                    <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black">ডাটাবেজ</h3><input id="dbSearch" onkeyup="searchDB()" placeholder="খুঁজুন..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>
+                    <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black italic">DATABASE</h3><input id="dbSearch" onkeyup="searchDB('dbBody')" placeholder="Search..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>
                     <div class="space-y-3" id="dbBody">${db.map(m => `
                         <div onclick="showMemberFullDetails('${m.id}')" class="p-4 bg-slate-50 rounded-2xl flex items-center justify-between cursor-pointer border hover:border-orange-500 transition">
                             <div class="flex items-center gap-3"><img src="${m.photo}" class="w-10 h-10 rounded-xl object-cover"><div><p class="text-xs font-black">${m.name}</p><p class="text-[8px] opacity-50">${m.id}</p></div></div>
@@ -378,99 +385,123 @@
                 `;
             } else if(t === 'approve') {
                 const pend = db.filter(x => x.status === 'Pending');
-                disp.innerHTML = `<h3 class="text-xl font-black mb-8">পেন্ডিং (${pend.length})</h3>
-                <div class="space-y-4">${pend.map(m => `
-                    <div class="p-5 bg-white border rounded-[2rem] flex items-center justify-between">
-                        <div class="flex items-center gap-4 cursor-pointer" onclick="showMemberFullDetails('${m.id}')"><img src="${m.photo}" class="w-12 h-12 rounded-2xl object-cover"><div><p class="text-sm font-black">${m.name}</p><p class="text-[10px] text-orange-500 uppercase">${m.payMethod}: ${m.trx || m.receiver}</p></div></div>
-                        <button onclick="window.updateMember('${m.id}', {status:'Approved'})" class="bg-orange-500 text-white px-5 py-3 rounded-xl font-black text-[9px] uppercase">Approve</button>
+                disp.innerHTML = `<h3 class="text-xl font-black mb-8 text-orange-500 italic uppercase">Pending Approval (${pend.length})</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">${pend.map(m => `
+                    <div class="p-5 bg-white border-2 border-orange-100 rounded-[2.5rem] shadow-sm">
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="${m.photo}" class="w-16 h-16 rounded-2xl object-cover ring-4 ring-orange-50">
+                            <div><p class="text-sm font-black uppercase">${m.name}</p><p class="text-[9px] font-bold text-slate-400">ID: #${m.id}</p></div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-2xl mb-4 border border-orange-100">
+                            <div class="flex justify-between items-center mb-1"><span class="text-[8px] font-black opacity-40 uppercase">Method</span><span class="text-xs font-black uppercase text-orange-600">${m.payMethod}</span></div>
+                            <div class="flex justify-between items-center"><span class="text-[8px] font-black opacity-40 uppercase">Trx/Receiver</span><span class="text-xs font-black text-orange-600">${m.trx || m.receiver}</span></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="window.updateMember('${m.id}', {status:'Approved'})" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-slate-900/20">Approve</button>
+                            <button onclick="showMemberFullDetails('${m.id}')" class="px-5 bg-slate-100 text-slate-400 rounded-xl"><i data-lucide="eye" size="18"></i></button>
+                        </div>
                     </div>
                 `).join('')}</div>`;
-            } else if(t === 'finance') {
-                let total = 0;
-                db.filter(u => u.status === 'Approved').forEach(u => total += cfg.prices[u.plan]);
+            } else if(t === 'all-data') {
                 disp.innerHTML = `
-                    <div class="p-10 premium-gradient text-white rounded-[2.5rem] text-center mb-6">
-                        <p class="text-[10px] opacity-40 uppercase tracking-widest">মোট সংগৃহীত ফান্ড</p>
-                        <h2 class="text-5xl font-black mt-2">৳${total}</h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-black italic uppercase">All Members List</h3>
+                        <div class="flex gap-2">
+                            <input id="allDataSearch" onkeyup="searchTable()" placeholder="সার্চ..." class="p-3 bg-slate-50 rounded-xl text-[10px] border outline-none w-32">
+                            <button onclick="downloadCSV()" class="bg-emerald-500 text-white px-5 py-3 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-emerald-500/20">Export</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="fullDataTable" class="w-full text-left text-[10px] border-collapse min-w-[800px]">
+                            <thead>
+                                <tr class="bg-slate-900 text-white uppercase italic">
+                                    <th class="p-4 rounded-l-2xl">ছবি</th>
+                                    <th class="p-4">নাম</th>
+                                    <th class="p-4">আইডি</th>
+                                    <th class="p-4">পিতার নাম</th>
+                                    <th class="p-4">ঠিকানা</th>
+                                    <th class="p-4">ফোন নাম্বার</th>
+                                    <th class="p-4 rounded-r-2xl">রক্ত</th>
+                                </tr>
+                            </thead>
+                            <tbody class="font-bold">
+                                ${db.map(m => `
+                                    <tr class="border-b hover:bg-slate-50 transition">
+                                        <td class="p-3"><img src="${m.photo}" class="w-10 h-10 rounded-xl object-cover shadow-sm"></td>
+                                        <td class="p-3 uppercase tracking-tighter">${m.name}</td>
+                                        <td class="p-3 text-orange-500">#${m.id}</td>
+                                        <td class="p-3">${m.pita || '-'}</td>
+                                        <td class="p-3">${m.vill}</td>
+                                        <td class="p-3">${m.mob}</td>
+                                        <td class="p-3"><span class="bg-red-50 text-red-500 px-2 py-1 rounded-md">${m.blood || '-'}</span></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
                     </div>
                 `;
+            } else if(t === 'finance') {
+                let total = 0; db.filter(u => u.status === 'Approved').forEach(u => total += cfg.prices[u.plan]);
+                disp.innerHTML = `<div class="p-10 premium-gradient text-white rounded-[2.5rem] text-center mb-6 border-4 border-white/5 shadow-2xl"><p class="text-[10px] opacity-40 uppercase tracking-[5px] mb-4">Total Fund Collected</p><h2 class="text-6xl font-black font-outfit tracking-tighter italic">৳${total}</h2></div>`;
             } else if(t === 'settings') {
                 disp.innerHTML = `
-                    <h3 class="text-xl font-black mb-8">সেটিংস</h3>
+                    <h3 class="text-xl font-black mb-8 italic uppercase">Systems Settings</h3>
                     <div class="space-y-4">
-                        <label class="block"><span class="text-[10px] font-black uppercase px-2">পেমেন্ট নম্বর</span><input id="newPay" value="${cfg.payNum}" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm border outline-none"></label>
-                        <label class="block"><span class="text-[10px] font-black uppercase px-2">অ্যাডমিন পাসওয়ার্ড</span><input id="newPass" value="${cfg.adminPass}" type="text" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm border outline-none"></label>
-                        <label class="block"><span class="text-[10px] font-black uppercase px-2">নোটিশ</span><textarea id="newNotice" class="w-full p-4 bg-slate-50 rounded-xl font-bold text-sm border outline-none">${cfg.notice}</textarea></label>
-                        <button onclick="saveAdminSettings()" class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs">Save Settings</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="block"><span class="text-[10px] font-black uppercase px-2 mb-2 inline-block">এডমিন পাসওয়ার্ড</span><input id="newPass" value="${cfg.adminPass}" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm border outline-none"></label>
+                            <label class="block"><span class="text-[10px] font-black uppercase px-2 mb-2 inline-block">প্রেস পাসওয়ার্ড</span><input id="newPressPass" value="${cfg.printerPass || 'press2026'}" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm border outline-none"></label>
+                        </div>
+                        <label class="block"><span class="text-[10px] font-black uppercase px-2 mb-2 inline-block">পেমেন্ট নম্বর</span><input id="newPay" value="${cfg.payNum}" class="w-full p-4 bg-slate-50 rounded-xl font-black text-sm border outline-none"></label>
+                        <label class="block"><span class="text-[10px] font-black uppercase px-2 mb-2 inline-block">নোটিশ বোর্ড</span><textarea id="newNotice" class="w-full p-4 bg-slate-50 rounded-xl font-bold text-sm border outline-none h-32">${cfg.notice}</textarea></label>
+                        <button onclick="saveAdminSettings()" class="w-full py-5 bg-slate-900 text-white rounded-2xl font-black uppercase text-xs shadow-xl shadow-slate-900/20">Update Settings</button>
                     </div>
                 `;
             }
             lucide.createIcons();
         }
 
-        function saveAdminSettings() {
-            window.saveConfig({ 
-                payNum: document.getElementById('newPay').value,
-                adminPass: document.getElementById('newPass').value,
-                notice: document.getElementById('newNotice').value
-            });
-            alert('সেটিংস সেভ হয়েছে!');
-        }
+        function searchDB(targetId) { const q = document.getElementById('dbSearch').value.toLowerCase(); document.querySelectorAll(`#${targetId} > div`).forEach(el => el.style.display = el.innerText.toLowerCase().includes(q) ? '' : 'none'); }
+        function searchTable() { const q = document.getElementById('allDataSearch').value.toLowerCase(); document.querySelectorAll('#fullDataTable tbody tr').forEach(tr => tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none'); }
+        function saveAdminSettings() { window.saveConfig({ payNum: document.getElementById('newPay').value, adminPass: document.getElementById('newPass').value, printerPass: document.getElementById('newPressPass').value, notice: document.getElementById('newNotice').value }); alert('Save Success!'); }
 
         function showMemberFullDetails(id) {
             const m = db.find(x => x.id === id);
             const modal = document.createElement('div');
             modal.id = "memberDetailsModal";
-            modal.className = "fixed inset-0 z-[200] bg-slate-900/90 flex items-center justify-center p-4";
+            modal.className = "fixed inset-0 z-[200] bg-slate-900/95 flex items-center justify-center p-4 backdrop-blur-md";
             modal.innerHTML = `
-                <div class="bg-white w-full max-w-sm rounded-[3rem] p-10 relative text-center max-h-[90vh] overflow-y-auto">
-                    <button onclick="this.closest('#memberDetailsModal').remove()" class="absolute top-6 right-6"><i data-lucide="x"></i></button>
-                    <img src="${m.photo}" class="w-24 h-24 rounded-3xl mx-auto mb-4 object-cover shadow-xl">
-                    <h4 class="text-xl font-black uppercase">${m.name}</h4>
-                    <p class="text-[10px] font-bold text-orange-500 mt-1">#${m.id} | ${m.plan} Member</p>
-                    
-                    <div class="mt-8 space-y-3 text-left text-xs font-bold">
-                        <p class="flex justify-between border-b pb-2"><span class="text-slate-400">পিতার নাম:</span> ${m.pita || 'N/A'}</p>
-                        <p class="flex justify-between border-b pb-2"><span class="text-slate-400">মোবাইল:</span> ${m.mob}</p>
-                        <p class="flex justify-between border-b pb-2"><span class="text-slate-400">গ্রাম:</span> ${m.vill}</p>
-                        <p class="flex justify-between border-b pb-2"><span class="text-slate-400">পেশা:</span> ${m.job || 'N/A'}</p>
-                        <p class="flex justify-between border-b pb-2"><span class="text-slate-400">রক্তের গ্রুপ:</span> ${m.blood || 'N/A'}</p>
-                        <div class="p-4 bg-orange-50 rounded-2xl mt-4">
-                            <p class="text-[10px] uppercase text-orange-400 mb-2">পেমেন্ট ডিটেইলস</p>
-                            <p>মেথড: ${m.payMethod}</p>
-                            <p>তথ্য: ${m.trx || m.receiver || 'N/A'}</p>
-                        </div>
+                <div class="bg-white w-full max-w-sm rounded-[3rem] p-8 relative text-center max-h-[90vh] overflow-y-auto shadow-2xl border-4 border-slate-50">
+                    <button onclick="this.closest('#memberDetailsModal').remove()" class="absolute top-6 right-6 p-2 bg-slate-100 rounded-full"><i data-lucide="x" size="18"></i></button>
+                    <img src="${m.photo}" class="w-24 h-24 rounded-3xl mx-auto mb-4 object-cover ring-4 ring-slate-100">
+                    <h4 class="text-xl font-black uppercase italic">${m.name}</h4>
+                    <p class="text-[9px] font-bold text-orange-500 uppercase">#${m.id} | ${m.plan} Member</p>
+                    <div class="mt-8 space-y-2 text-left text-[11px] font-bold">
+                        <div class="flex justify-between p-3 bg-slate-50 rounded-xl"><span class="opacity-40 uppercase">Pita</span> <span>${m.pita || '-'}</span></div>
+                        <div class="flex justify-between p-3 bg-slate-50 rounded-xl"><span class="opacity-40 uppercase">Mobile</span> <span>${m.mob}</span></div>
+                        <div class="flex justify-between p-3 bg-slate-50 rounded-xl"><span class="opacity-40 uppercase">Village</span> <span>${m.vill}</span></div>
+                        <div class="flex justify-between p-3 bg-slate-50 rounded-xl"><span class="opacity-40 uppercase">Blood</span> <span class="text-red-500">${m.blood || '-'}</span></div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mt-8">
-                        <button onclick="renderMemberID('${m.id}'); document.getElementById('memberDetailsModal').remove();" class="py-4 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase">ID Card</button>
-                        <button onclick="openApplication('${m.plan}', db.find(x=>x.id==='${m.id}')); document.getElementById('memberDetailsModal').remove();" class="py-4 bg-slate-100 rounded-xl font-black text-[10px] uppercase">Edit Info</button>
-                        <button onclick="if(confirm('Delete User?')){window.deleteMember('${m.id}'); document.getElementById('memberDetailsModal').remove();}" class="col-span-2 py-4 bg-red-50 text-red-500 rounded-xl font-black text-[10px] uppercase">Delete User</button>
+                    <div class="grid grid-cols-2 gap-2 mt-8">
+                        <button onclick="renderMemberID('${m.id}'); document.getElementById('memberDetailsModal').remove();" class="py-4 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20"><i data-lucide="printer" size="14"></i> Print ID</button>
+                        ${authType === 'admin' ? `<button onclick="openApplication('${m.plan}', db.find(x=>x.id==='${m.id}')); document.getElementById('memberDetailsModal').remove();" class="py-4 bg-slate-100 rounded-xl font-black text-[10px] uppercase">Edit</button>` : ''}
+                        ${authType === 'admin' ? `<button onclick="if(confirm('Delete?')){window.deleteMember('${m.id}'); document.getElementById('memberDetailsModal').remove();}" class="col-span-2 py-4 bg-red-50 text-red-500 rounded-xl font-black text-[10px] uppercase">Delete Account</button>` : ''}
                     </div>
                 </div>
             `;
             document.body.appendChild(modal); lucide.createIcons();
         }
 
-        function authMember() {
-            const m = document.getElementById('loginMob').value;
-            const n = document.getElementById('loginNid').value;
-            const u = db.find(x => x.mob === m && x.nid.endsWith(n));
-            if(u && u.status === 'Approved') renderMemberProfile(u);
-            else if(u && u.status === 'Pending') alert('আবেদন পেন্ডিং আছে, এপ্রুভ হওয়ার অপেক্ষা করুন!');
-            else alert('মোবাইল বা NID এর শেষ ৪ সংখ্যা ভুল!');
-        }
+        function authMember() { const m = document.getElementById('loginMob').value; const n = document.getElementById('loginNid').value; const u = db.find(x => x.mob === m && x.nid.endsWith(n)); if(u && u.status === 'Approved') renderMemberProfile(u); else if(u && u.status === 'Pending') alert('আবেদন পেন্ডিং আছে!'); else alert('ভুল তথ্য!'); }
 
         function renderMemberProfile(u) {
             document.getElementById('profileContent').innerHTML = `
                 <div class="max-w-md mx-auto bg-white rounded-[3rem] p-10 shadow-2xl border text-center relative no-print">
                     <button onclick="showPage('home')" class="absolute top-8 right-8"><i data-lucide="power"></i></button>
-                    <img src="${u.photo}" class="w-24 h-24 rounded-3xl mx-auto mb-6 object-cover shadow-2xl">
-                    <h3 class="text-2xl font-black">${u.name}</h3>
+                    <img src="${u.photo}" class="w-24 h-24 rounded-3xl mx-auto mb-6 object-cover shadow-2xl ring-4 ring-orange-500/10">
+                    <h3 class="text-2xl font-black italic uppercase">${u.name}</h3>
                     <div class="grid grid-cols-1 gap-3 mt-10">
-                        <button onclick="renderMemberID('${u.id}')" class="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col items-center gap-3"><i data-lucide="id-card"></i><span class="text-[9px] font-black uppercase">Download ID Card</span></button>
-                        <button onclick="renderReceipt(db.find(x=>x.id==='${u.id}'))" class="p-6 bg-orange-50 text-orange-600 rounded-[2rem] flex flex-col items-center gap-3"><i data-lucide="file-text"></i><span class="text-[9px] font-black uppercase">View Invoice</span></button>
-                        <button onclick="openApplication('${u.plan}', db.find(x=>x.id==='${u.id}'))" class="p-4 bg-slate-100 text-slate-500 rounded-2xl font-black text-[9px] uppercase">Update Information</button>
+                        <button onclick="renderMemberID('${u.id}')" class="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col items-center gap-2 shadow-xl shadow-slate-900/20"><i data-lucide="id-card"></i><span class="text-[9px] font-black uppercase tracking-widest">Digital ID Card</span></button>
+                        <button onclick="renderReceipt(db.find(x=>x.id==='${u.id}'))" class="p-6 bg-orange-50 text-orange-600 rounded-[2rem] flex flex-col items-center gap-2 border border-orange-100"><i data-lucide="file-text"></i><span class="text-[9px] font-black uppercase tracking-widest">Invoice</span></button>
                     </div>
                 </div>
             `;
@@ -478,20 +509,16 @@
         }
 
         function renderMemberID(id) {
-            const u = db.find(x => x.id === id);
-            const p = plans.find(x => x.id === u.plan);
+            const u = db.find(x => x.id === id); const p = plans.find(x => x.id === u.plan);
             document.getElementById('profileContent').innerHTML = `
                 <div class="id-card-wrapper" onclick="this.querySelector('.id-card-inner').classList.toggle('is-flipped')">
                     <div class="id-card-inner">
                         <div class="id-front">
                             <div class="h-28 text-center pt-8 text-white relative" style="background:${p.c}">
                                 <h2 class="font-outfit text-[14px] font-black uppercase tracking-tight px-4">Youth Community Baraigram</h2>
-                                <p class="text-[6px] font-bold opacity-60 uppercase tracking-[4px] mt-1">Baraigram, Natore</p>
-                                <div class="absolute -bottom-14 left-1/2 -translate-x-1/2 w-28 h-28 bg-white p-1 rounded-2xl shadow-2xl">
-                                    <img src="${u.photo}" class="w-full h-full object-cover rounded-xl">
-                                </div>
+                                <div class="absolute -bottom-14 left-1/2 -translate-x-1/2 w-28 h-28 bg-white p-1 rounded-2xl shadow-2xl"><img src="${u.photo}" class="w-full h-full object-cover rounded-xl"></div>
                             </div>
-                            <div class="mt-16 text-center px-6 id-text-container">
+                            <div class="mt-16 text-center px-6">
                                 <h4 class="text-xl font-black italic uppercase mt-2">${u.name}</h4>
                                 <div class="inline-block px-4 py-1 rounded-full text-[9px] font-black text-white uppercase mt-1" style="background:${p.c}">${p.n} Member</div>
                                 <div class="grid grid-cols-2 gap-2 mt-6 text-left">
@@ -507,34 +534,24 @@
                         </div>
                         <div class="id-back p-8 flex flex-col justify-between text-center">
                             <div>
-                                <h5 class="text-[10px] font-black uppercase tracking-[5px] mb-4 text-slate-900">Information</h5>
+                                <h5 class="text-[10px] font-black uppercase tracking-[5px] mb-4 text-slate-900 italic">Member Info</h5>
                                 <div class="text-left bg-slate-50 p-4 rounded-xl border space-y-2">
                                     <p class="text-[7px] font-black uppercase text-slate-400">Father's Name</p><p class="text-[10px] font-black">${u.pita || 'N/A'}</p>
                                     <p class="text-[7px] font-black uppercase text-slate-400">Village/Area</p><p class="text-[10px] font-black">${u.vill}</p>
                                     <p class="text-[7px] font-black uppercase text-slate-400">Valid Till</p><p class="text-[10px] font-black">DEC 2027</p>
                                 </div>
-                                <p class="text-[8px] text-slate-400 font-bold mt-6">এই কার্ডটি সংগঠনের সম্পত্তি। হারিয়ে গেলে কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
+                                <p class="text-[8px] text-slate-400 font-bold mt-6 italic">এই কার্ডটি সংগঠনের সম্পত্তি। হারিয়ে গেলে কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
                             </div>
-                            <div class="pt-6 border-t text-[8px] font-black uppercase tracking-widest text-slate-400">Baraigram, Natore.</div>
+                            <div class="pt-6 border-t text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Powered by Rafi Digital Solution</div>
                         </div>
                     </div>
                 </div>
                 <div class="flex gap-4 max-w-xs mx-auto mt-10 no-print">
-                    <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase shadow-xl">Print ID</button>
-                    <button onclick="renderMemberProfile(db.find(x=>x.id==='${u.id}'))" class="py-4 px-6 bg-slate-100 rounded-2xl"><i data-lucide="arrow-left"></i></button>
+                    <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase shadow-xl">Print ID Card</button>
+                    <button onclick="showPage('home')" class="py-4 px-6 bg-slate-100 rounded-2xl"><i data-lucide="arrow-left"></i></button>
                 </div>
             `;
             showPage('member-profile'); lucide.createIcons();
-        }
-
-        function openSystemAuth() {
-            document.getElementById('adminKey').value = "";
-            showPage('system-auth');
-        }
-
-        function searchDB() {
-            const q = document.getElementById('dbSearch').value.toLowerCase();
-            document.querySelectorAll('#dbBody > div').forEach(el => el.style.display = el.innerText.toLowerCase().includes(q) ? '' : 'none');
         }
 
         renderHome();

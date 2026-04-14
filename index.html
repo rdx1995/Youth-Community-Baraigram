@@ -191,14 +191,21 @@
         ];
 
         window.db = [];
+
+        // শুরুতে একবার প্ল্যান রেন্ডার করুন দ্রুত লোডিং এর জন্য
+        window.renderHome();
+
         onValue(ref(rdb, 'members'), (snap) => {
             window.db = snap.val() ? Object.values(snap.val()) : [];
-            renderHome();
+            // ব্যাকগ্রাউন্ডে ডাটাবেজ আপডেট হলে নোটিশ বা মারকিউ আপডেট হতে পারে
+            if(snap.val()) renderHome(); 
         });
 
         onValue(ref(rdb, 'config'), (snap) => {
-            if(snap.val()) window.cfg = {...window.cfg, ...snap.val()};
-            renderHome();
+            if(snap.val()) {
+                window.cfg = {...window.cfg, ...snap.val()};
+                renderHome();
+            }
         });
 
         window.saveMember = (m) => set(ref(rdb, 'members/' + m.id), m);
@@ -221,15 +228,21 @@
         }
 
         function renderHome() {
-            document.getElementById('planGrid').innerHTML = plans.map(p => `
-                <div onclick="openApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-6 rounded-[2rem] text-white cursor-pointer relative overflow-hidden btn-hover shadow-xl">
-                    <i data-lucide="${p.i}" class="absolute -right-6 -bottom-6 opacity-20" size="120"></i>
-                    <p class="text-[9px] font-black uppercase opacity-60 tracking-widest">Membership Plan</p>
-                    <h4 class="text-3xl font-black mt-1">${p.n} Member</h4>
-                    <p class="text-xs font-bold mt-4 bg-white/20 px-3 py-1.5 rounded-full w-fit">৳${cfg.prices[p.id]}</p>
-                </div>
-            `).join('');
-            document.getElementById('marqueeBox').innerHTML = `<span class="mx-20 text-[10px] font-black uppercase tracking-[3px]">${cfg.notice}</span>`.repeat(5);
+            const planGrid = document.getElementById('planGrid');
+            if(planGrid) {
+                planGrid.innerHTML = plans.map(p => `
+                    <div onclick="openApplication('${p.id}')" class="bg-gradient-to-br ${p.g} p-6 rounded-[2rem] text-white cursor-pointer relative overflow-hidden btn-hover shadow-xl">
+                        <i data-lucide="${p.i}" class="absolute -right-6 -bottom-6 opacity-20" size="120"></i>
+                        <p class="text-[9px] font-black uppercase opacity-60 tracking-widest">Membership Plan</p>
+                        <h4 class="text-3xl font-black mt-1">${p.n} Member</h4>
+                        <p class="text-xs font-bold mt-4 bg-white/20 px-3 py-1.5 rounded-full w-fit">৳${cfg.prices[p.id]}</p>
+                    </div>
+                `).join('');
+            }
+            const marqueeBox = document.getElementById('marqueeBox');
+            if(marqueeBox) {
+                marqueeBox.innerHTML = `<span class="mx-20 text-[10px] font-black uppercase tracking-[3px]">${cfg.notice}</span>`.repeat(5);
+            }
             lucide.createIcons();
         }
 
@@ -464,6 +477,23 @@
         function searchTable() { const q = document.getElementById('allDataSearch').value.toLowerCase(); document.querySelectorAll('#fullDataTable tbody tr').forEach(tr => tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none'); }
         function saveAdminSettings() { window.saveConfig({ payNum: document.getElementById('newPay').value, adminPass: document.getElementById('newPass').value, printerPass: document.getElementById('newPressPass').value, notice: document.getElementById('newNotice').value }); alert('Save Success!'); }
 
+        // এক্সপোর্ট (CSV Download) ফাংশন
+        window.downloadCSV = function() {
+            if(window.db.length === 0) return alert('ডাউনলোড করার মত কোন তথ্য নেই!');
+            let csv = 'ID,Name,Father Name,Mobile,NID,Village,Blood,Plan,Status,Joined\n';
+            window.db.forEach(m => {
+                csv += `"${m.id}","${m.name}","${m.pita || '-'}","${m.mob}","${m.nid}","${m.vill}","${m.blood || '-'}","${m.plan}","${m.status}","${m.joined}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'YCB_Members_Data.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function showMemberFullDetails(id) {
             const m = db.find(x => x.id === id);
             const modal = document.createElement('div');
@@ -553,8 +583,6 @@
             `;
             showPage('member-profile'); lucide.createIcons();
         }
-
-        renderHome();
     </script>
 </body>
 </html>

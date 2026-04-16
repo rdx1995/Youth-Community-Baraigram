@@ -30,12 +30,28 @@
         .btn-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(249, 115, 22, 0.4); }
 
+        /* Color Print Fix Integrated Here */
         @media print { 
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
             .no-print { display: none !important; } 
             body { background: white !important; margin: 0; padding: 0; }
-            .id-card-wrapper { width: 3.375in !important; height: auto !important; margin: 0 auto !important; transform: scale(1.2); transform-origin: top center; }
+            .id-card-wrapper { width: 3.375in !important; height: auto !important; margin: 0 auto !important; transform: scale(1.1); transform-origin: top center; }
             .id-card-inner { transform: none !important; transition: none !important; }
-            .id-front, .id-back { position: relative !important; transform: none !important; box-shadow: none !important; display: block !important; page-break-after: always; width: 3.375in !important; height: 5.3in !important; border: 1px solid #000 !important; margin: 20px auto !important; }
+            .id-front, .id-back { 
+                position: relative !important; 
+                transform: none !important; 
+                box-shadow: none !important; 
+                display: block !important; 
+                page-break-after: always; 
+                width: 3.375in !important; 
+                height: 5.3in !important; 
+                border: 0.5px solid #eee !important; 
+                margin: 10px auto !important; 
+            }
         }
     </style>
 </head>
@@ -375,7 +391,6 @@
             if ((authType === 'admin' && key === cfg.adminPass) || (authType === 'printer' && key === cfg.printerPass)) {
                 if (authType === 'printer') {
                     document.getElementById('dashTitle').innerHTML = 'Printer <span class="text-orange-500">Portal</span>';
-                    // প্রেস লগইনে All Data এবং অন্য সব বাটন হাইড করা হলো
                     if(document.getElementById('tabAll')) document.getElementById('tabAll').classList.add('hidden');
                     if(document.getElementById('tabPending')) document.getElementById('tabPending').classList.add('hidden');
                     if(document.getElementById('tabFin')) document.getElementById('tabFin').classList.add('hidden');
@@ -394,7 +409,6 @@
         function renderTab(t) {
             const disp = document.getElementById('adminTabDisplay');
             if(t === 'db') {
-                // নামের ক্রমানুসারে সর্ট করা
                 const approvedMembers = db.filter(m => m.status === 'Approved').sort((a, b) => a.name.localeCompare(b.name));
                 disp.innerHTML = `
                     <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black italic">DATABASE (APPROVED)</h3><input id="dbSearch" onkeyup="searchDB('dbBody')" placeholder="Search..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>

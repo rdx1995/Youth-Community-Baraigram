@@ -68,7 +68,10 @@
                     <p class="mt-4 text-slate-400 text-sm font-medium">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি</p>
                 </div>
             </div>
-            <div class="px-5 -mt-16 grid grid-cols-1 gap-4 mb-12" id="planGrid"></div>
+            <div class="px-5 -mt-16 grid grid-cols-1 gap-4 mb-12" id="planGrid">
+                <div class="animate-pulse bg-slate-200 h-32 rounded-[2rem]"></div>
+                <div class="animate-pulse bg-slate-200 h-32 rounded-[2rem]"></div>
+            </div>
         </section>
 
         <section id="application-form" class="hidden-view px-5 py-10 no-print">
@@ -140,7 +143,6 @@
                 <button onclick="authMember()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black mt-8 shadow-xl text-xs tracking-widest uppercase">প্রবেশ করুন</button>
             </div>
         </section>
-
     </main>
 
     <footer class="bg-white border-t border-slate-100 pt-16 pb-10 no-print relative overflow-hidden">
@@ -167,7 +169,7 @@
                 </div>
             </div>
 
-            <p class="text-slate-500 text-[10px] font-medium max-w-sm mx-auto mb-10 leading-relaxed">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি। আমরা বড়াইগ্রামের তারুণ্যকে একত্রিত করে একটি সুন্দর সমাজ গড়ার লক্ষ্যে কাজ করছি।</p>
+            <p class="text-slate-500 text-[10px] font-medium max-w-sm mx-auto mb-10 leading-relaxed">ঐতিহ্য ও অগ্রযাত্রায় এক অপরাজেয় শক্তি।</p>
             
             <div class="pt-8 border-t border-slate-200"><p class="text-[8px] font-black text-slate-400 uppercase tracking-[6px]">© 2026 YOUTH COMMUNITY BARAIGRAM | POWERED BY RAFI DIGITAL SOLUTION</p></div>
         </div>
@@ -182,8 +184,9 @@
         const rdb = getDatabase(app);
 
         window.cfg = { adminPass: 'rafi2026', printerPass: 'press2026', payNum: '01763752653', notice: 'বড়াইগ্রামের তারুণ্যের অগ্রযাত্রা শুরু হলো!', prices: { Star: 300, Silver: 500, Gold: 1000, Platinum: 2000, Diamond: 5000 } };
+        
         window.plans = [
-            {id:'Star', n:'স্টার', g:'from-orange-500 to-amber-500', c:'#f97316', i:'star'},
+            {id:'Star', n:'স্টার', g:'from-emerald-500 to-teal-600', c:'#10b981', i:'star'},
             {id:'Silver', n:'সিলভার', g:'from-slate-400 to-slate-600', c:'#475569', i:'shield'},
             {id:'Gold', n:'গোল্ড', g:'from-amber-400 to-yellow-600', c:'#d97706', i:'award'},
             {id:'Platinum', n:'প্লাটিনাম', g:'from-indigo-600 to-purple-700', c:'#4f46e5', i:'zap'},
@@ -192,13 +195,9 @@
 
         window.db = [];
 
-        // শুরুতে একবার প্ল্যান রেন্ডার করুন দ্রুত লোডিং এর জন্য
-        window.renderHome();
-
         onValue(ref(rdb, 'members'), (snap) => {
             window.db = snap.val() ? Object.values(snap.val()) : [];
-            // ব্যাকগ্রাউন্ডে ডাটাবেজ আপডেট হলে নোটিশ বা মারকিউ আপডেট হতে পারে
-            if(snap.val()) renderHome(); 
+            renderHome(); 
         });
 
         onValue(ref(rdb, 'config'), (snap) => {
@@ -250,7 +249,7 @@
             selectedPayMethod = method;
             document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('bg-orange-500', 'text-white', 'border-orange-500'));
             const active = document.getElementById('pay-'+method);
-            active.classList.add('bg-orange-500', 'text-white', 'border-orange-500');
+            if(active) active.classList.add('bg-orange-500', 'text-white', 'border-orange-500');
             document.getElementById('handCashBox').classList.toggle('hidden', method !== 'Hand');
             document.getElementById('trxBox').classList.toggle('hidden', method === 'Hand');
         }
@@ -299,7 +298,7 @@
                             <button id="pay-Rocket" onclick="setPayment('Rocket')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">রকেট</button>
                             <button id="pay-Hand" onclick="setPayment('Hand')" class="pay-option p-4 bg-white/5 rounded-xl text-[10px] font-black border border-white/10">হাতে হাতে</button>
                         </div>
-                        <div id="trxBox"><input id="fTrx" type="text" placeholder="Transaction ID/আপনি যেই নম্বর থেকে টাকা দিয়েছেন" class="w-full p-4 bg-white/10 rounded-xl text-center font-black tracking-widest text-orange-400 outline-none"></div>
+                        <div id="trxBox"><input id="fTrx" type="text" placeholder="Transaction ID / From Number" class="w-full p-4 bg-white/10 rounded-xl text-center font-black tracking-widest text-orange-400 outline-none"></div>
                         <div id="handCashBox" class="hidden"><input id="fReceiver" type="text" placeholder="কার কাছে টাকা দিয়েছেন?" class="w-full p-4 bg-white/10 rounded-xl text-center font-bold text-sm outline-none"></div>
                     </div>` : ''}
 
@@ -315,9 +314,10 @@
             const reader = new FileReader();
             reader.onload = () => {
                 currentAppPhoto = reader.result;
-                document.getElementById('photoPrev').innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
+                const prev = document.getElementById('photoPrev');
+                if(prev) prev.innerHTML = `<img src="${reader.result}" class="w-full h-full object-cover">`;
             };
-            reader.readAsDataURL(e.target.files[0]);
+            if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
         }
 
         function submitApp(pid) {
@@ -375,10 +375,17 @@
             if ((authType === 'admin' && key === cfg.adminPass) || (authType === 'printer' && key === cfg.printerPass)) {
                 if (authType === 'printer') {
                     document.getElementById('dashTitle').innerHTML = 'Printer <span class="text-orange-500">Portal</span>';
-                    ['tabPending', 'tabFin', 'tabSet'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                    // প্রেস লগইনে All Data এবং অন্য সব বাটন হাইড করা হলো
+                    if(document.getElementById('tabAll')) document.getElementById('tabAll').classList.add('hidden');
+                    if(document.getElementById('tabPending')) document.getElementById('tabPending').classList.add('hidden');
+                    if(document.getElementById('tabFin')) document.getElementById('tabFin').classList.add('hidden');
+                    if(document.getElementById('tabSet')) document.getElementById('tabSet').classList.add('hidden');
                 } else {
                     document.getElementById('dashTitle').innerHTML = 'Control <span class="text-orange-500">Center</span>';
-                    ['tabPending', 'tabFin', 'tabSet'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+                    if(document.getElementById('tabAll')) document.getElementById('tabAll').classList.remove('hidden');
+                    if(document.getElementById('tabPending')) document.getElementById('tabPending').classList.remove('hidden');
+                    if(document.getElementById('tabFin')) document.getElementById('tabFin').classList.remove('hidden');
+                    if(document.getElementById('tabSet')) document.getElementById('tabSet').classList.remove('hidden');
                 }
                 renderTab('db'); showPage('admin-dashboard');
             } else alert('ভুল পাসওয়ার্ড!');
@@ -387,14 +394,20 @@
         function renderTab(t) {
             const disp = document.getElementById('adminTabDisplay');
             if(t === 'db') {
+                // নামের ক্রমানুসারে সর্ট করা
+                const approvedMembers = db.filter(m => m.status === 'Approved').sort((a, b) => a.name.localeCompare(b.name));
                 disp.innerHTML = `
-                    <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black italic">DATABASE</h3><input id="dbSearch" onkeyup="searchDB('dbBody')" placeholder="Search..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>
-                    <div class="space-y-3" id="dbBody">${db.map(m => `
+                    <div class="flex justify-between items-center mb-8"><h3 class="text-xl font-black italic">DATABASE (APPROVED)</h3><input id="dbSearch" onkeyup="searchDB('dbBody')" placeholder="Search..." class="p-3 bg-slate-50 rounded-xl text-xs w-32 outline-none border"></div>
+                    <div class="space-y-3" id="dbBody">${approvedMembers.length > 0 ? approvedMembers.map((m, index) => `
                         <div onclick="showMemberFullDetails('${m.id}')" class="p-4 bg-slate-50 rounded-2xl flex items-center justify-between cursor-pointer border hover:border-orange-500 transition">
-                            <div class="flex items-center gap-3"><img src="${m.photo}" class="w-10 h-10 rounded-xl object-cover"><div><p class="text-xs font-black">${m.name}</p><p class="text-[8px] opacity-50">${m.id}</p></div></div>
-                            <span class="text-[8px] font-black uppercase px-2 py-1 rounded-md ${m.status==='Approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'}">${m.status}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] font-black opacity-30">${index + 1}</span>
+                                <img src="${m.photo}" class="w-10 h-10 rounded-xl object-cover">
+                                <div><p class="text-xs font-black">${m.name}</p><p class="text-[8px] opacity-50">${m.id}</p></div>
+                            </div>
+                            <span class="text-[8px] font-black uppercase px-2 py-1 rounded-md bg-emerald-100 text-emerald-600">${m.status}</span>
                         </div>
-                    `).join('')}</div>
+                    `).join('') : '<p class="text-center text-slate-400 py-10 font-bold">কোন এপ্রুভড মেম্বার নেই</p>'}</div>
                 `;
             } else if(t === 'approve') {
                 const pend = db.filter(x => x.status === 'Pending');
@@ -410,7 +423,7 @@
                             <div class="flex justify-between items-center"><span class="text-[8px] font-black opacity-40 uppercase">Trx/Receiver</span><span class="text-xs font-black text-orange-600">${m.trx || m.receiver}</span></div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="window.updateMember('${m.id}', {status:'Approved'})" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-slate-900/20">Approve</button>
+                            <button onclick="window.updateMember('${m.id}', {status:'Approved'}); setTimeout(()=>renderTab('approve'), 500);" class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-lg shadow-slate-900/20">Approve</button>
                             <button onclick="showMemberFullDetails('${m.id}')" class="px-5 bg-slate-100 text-slate-400 rounded-xl"><i data-lucide="eye" size="18"></i></button>
                         </div>
                     </div>
@@ -428,13 +441,7 @@
                         <table id="fullDataTable" class="w-full text-left text-[10px] border-collapse min-w-[800px]">
                             <thead>
                                 <tr class="bg-slate-900 text-white uppercase italic">
-                                    <th class="p-4 rounded-l-2xl">ছবি</th>
-                                    <th class="p-4">নাম</th>
-                                    <th class="p-4">আইডি</th>
-                                    <th class="p-4">পিতার নাম</th>
-                                    <th class="p-4">ঠিকানা</th>
-                                    <th class="p-4">ফোন নাম্বার</th>
-                                    <th class="p-4 rounded-r-2xl">রক্ত</th>
+                                    <th class="p-4 rounded-l-2xl">ছবি</th><th class="p-4">নাম</th><th class="p-4">আইডি</th><th class="p-4">পিতার নাম</th><th class="p-4">ঠিকানা</th><th class="p-4">ফোন নাম্বার</th><th class="p-4 rounded-r-2xl">রক্ত</th>
                                 </tr>
                             </thead>
                             <tbody class="font-bold">
@@ -454,8 +461,28 @@
                     </div>
                 `;
             } else if(t === 'finance') {
-                let total = 0; db.filter(u => u.status === 'Approved').forEach(u => total += cfg.prices[u.plan]);
-                disp.innerHTML = `<div class="p-10 premium-gradient text-white rounded-[2.5rem] text-center mb-6 border-4 border-white/5 shadow-2xl"><p class="text-[10px] opacity-40 uppercase tracking-[5px] mb-4">Total Fund Collected</p><h2 class="text-6xl font-black font-outfit tracking-tighter italic">৳${total}</h2></div>`;
+                let total = 0;
+                let stats = {};
+                plans.forEach(p => stats[p.id] = { count: 0, amount: 0, name: p.n });
+                db.filter(u => u.status === 'Approved').forEach(u => {
+                    const price = cfg.prices[u.plan] || 0;
+                    total += price;
+                    if(stats[u.plan]) { stats[u.plan].count++; stats[u.plan].amount += price; }
+                });
+                disp.innerHTML = `
+                    <div class="p-10 premium-gradient text-white rounded-[2.5rem] text-center mb-6 border-4 border-white/5 shadow-2xl">
+                        <p class="text-[10px] opacity-40 uppercase tracking-[5px] mb-4">Total Fund Collected</p>
+                        <h2 class="text-6xl font-black font-outfit tracking-tighter italic">৳${total}</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${plans.map(p => `
+                            <div class="flex justify-between items-center p-5 bg-slate-50 rounded-2xl border">
+                                <div><p class="text-[10px] font-black uppercase text-slate-400">${p.n} Member</p><p class="text-xs font-bold">${stats[p.id].count} জন</p></div>
+                                <p class="text-lg font-black text-orange-600 font-outfit">৳${stats[p.id].amount}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             } else if(t === 'settings') {
                 disp.innerHTML = `
                     <h3 class="text-xl font-black mb-8 italic uppercase">Systems Settings</h3>
@@ -477,21 +504,14 @@
         function searchTable() { const q = document.getElementById('allDataSearch').value.toLowerCase(); document.querySelectorAll('#fullDataTable tbody tr').forEach(tr => tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none'); }
         function saveAdminSettings() { window.saveConfig({ payNum: document.getElementById('newPay').value, adminPass: document.getElementById('newPass').value, printerPass: document.getElementById('newPressPass').value, notice: document.getElementById('newNotice').value }); alert('Save Success!'); }
 
-        // এক্সপোর্ট (CSV Download) ফাংশন
         window.downloadCSV = function() {
             if(window.db.length === 0) return alert('ডাউনলোড করার মত কোন তথ্য নেই!');
             let csv = 'ID,Name,Father Name,Mobile,NID,Village,Blood,Plan,Status,Joined\n';
-            window.db.forEach(m => {
-                csv += `"${m.id}","${m.name}","${m.pita || '-'}","${m.mob}","${m.nid}","${m.vill}","${m.blood || '-'}","${m.plan}","${m.status}","${m.joined}"\n`;
-            });
+            window.db.forEach(m => { csv += `"${m.id}","${m.name}","${m.pita || '-'}","${m.mob}","${m.nid}","${m.vill}","${m.blood || '-'}","${m.plan}","${m.status}","${m.joined}"\n`; });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'YCB_Members_Data.csv');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const link = document.createElement('a'); link.href = url; link.setAttribute('download', 'YCB_Members_Data.csv');
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
         }
 
         function showMemberFullDetails(id) {
@@ -540,6 +560,10 @@
 
         function renderMemberID(id) {
             const u = db.find(x => x.id === id); const p = plans.find(x => x.id === u.plan);
+            let backAction = "showPage('home')";
+            if(!document.getElementById('admin-dashboard').classList.contains('hidden-view')) backAction = "showPage('admin-dashboard')";
+            else if (!document.getElementById('member-profile').classList.contains('hidden-view')) backAction = "renderMemberProfile(db.find(x=>x.id==='" + id + "'))";
+
             document.getElementById('profileContent').innerHTML = `
                 <div class="id-card-wrapper" onclick="this.querySelector('.id-card-inner').classList.toggle('is-flipped')">
                     <div class="id-card-inner">
@@ -570,7 +594,6 @@
                                     <p class="text-[7px] font-black uppercase text-slate-400">Village/Area</p><p class="text-[10px] font-black">${u.vill}</p>
                                     <p class="text-[7px] font-black uppercase text-slate-400">Valid Till</p><p class="text-[10px] font-black">DEC 2027</p>
                                 </div>
-                                <p class="text-[8px] text-slate-400 font-bold mt-6 italic">এই কার্ডটি সংগঠনের সম্পত্তি। হারিয়ে গেলে কর্তৃপক্ষের সাথে যোগাযোগ করুন।</p>
                             </div>
                             <div class="pt-6 border-t text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Powered by Rafi Digital Solution</div>
                         </div>
@@ -578,7 +601,7 @@
                 </div>
                 <div class="flex gap-4 max-w-xs mx-auto mt-10 no-print">
                     <button onclick="window.print()" class="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase shadow-xl">Print ID Card</button>
-                    <button onclick="showPage('home')" class="py-4 px-6 bg-slate-100 rounded-2xl"><i data-lucide="arrow-left"></i></button>
+                    <button onclick="${backAction}" class="py-4 px-6 bg-slate-100 rounded-2xl"><i data-lucide="arrow-left"></i></button>
                 </div>
             `;
             showPage('member-profile'); lucide.createIcons();
